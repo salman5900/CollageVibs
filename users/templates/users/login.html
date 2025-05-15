@@ -1,0 +1,17 @@
+{% extends "main/layout.html" %}
+
+{% block title %}
+    Login - CollageVibs
+{% endblock %}
+
+{% block content %}
+<h1>Login</h1>
+<form action="{% url 'users:login' %}" method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Login</button>
+    <a href="{% url "users:register" %}">
+     <button>Create Account</button>
+    </a>
+</form>
+{% endblock %}

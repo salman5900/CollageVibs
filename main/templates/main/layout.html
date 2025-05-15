@@ -13,6 +13,13 @@
     <script src="{% static 'js/main.js' %}" defer></script>
 </head>
 <body>
+    {% if not hide_navbar %}
+    <nav>
+        <a href="{% url 'users:logout' %}">
+        <button>logout</button>
+        </a>
+    </nav>
+{% endif %}
     {% block content %}
     {% endblock %}
 </body>
