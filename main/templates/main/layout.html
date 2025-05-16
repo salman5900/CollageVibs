@@ -17,7 +17,7 @@
 <body>
     {% if not hide_navbar %}
     <nav class="navbar">
-        <div>
+        <div class="logo">
             <h1>CollageVibs</h1>
         </div>
         <div class="nav-links">
@@ -26,9 +26,11 @@
             <a href="#">something</a>
         </div>
         
-         <a href="{% url 'users:logout' %}">
-           <button>logout</button>
-         </a>
+         
+        
+        <a href="{% url 'users:logout' %}" class="logout-button">logout</a>
+        
+         
         
         
     </nav>
