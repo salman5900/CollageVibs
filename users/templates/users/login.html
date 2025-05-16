@@ -8,10 +8,17 @@
 <h1>Login</h1>
 <form action="{% url 'users:login' %}" method="POST">
     {% csrf_token %}
-    {{ form }}
+    <label for="username">Username:</label>
+    {{ form.username }}
+
+    <label for="password">Password:</label>
+    {{ form.password }}
+
     <button type="submit">Login</button>
-    <a href="{% url "users:register" %}">
-     <button>Create Account</button>
+    
+     <a href="{% url 'users:register' %}" class="link-button">
+      Create Account
     </a>
+    
 </form>
 {% endblock %}

@@ -9,18 +9,33 @@
           CollageVibs
         {% endblock %}
     </title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v=rage-mode">
     <script src="{% static 'js/main.js' %}" defer></script>
 </head>
 <body>
     {% if not hide_navbar %}
-    <nav>
-        <a href="{% url 'users:logout' %}">
-        <button>logout</button>
-        </a>
+    <nav class="navbar">
+        <div>
+            <h1>CollageVibs</h1>
+        </div>
+        <div class="nav-links">
+            <a href="#">something</a>
+            <a href="#">something</a>
+            <a href="#">something</a>
+        </div>
+        
+         <a href="{% url 'users:logout' %}">
+           <button>logout</button>
+         </a>
+        
+        
     </nav>
 {% endif %}
+<main>
     {% block content %}
     {% endblock %}
+</main>
 </body>
 </html>
