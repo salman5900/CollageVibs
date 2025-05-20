@@ -13,10 +13,11 @@
 
     <div id="chat_container" class="chat-container">
       <ul id="chat_messages" class="chat-messages">
-
+    {% for chat in global_chat_messages %}
+    {% if chat.user == user %}
         <li class="message-sent">
           <div class="sent-bubble">
-            <span>Hi, how is everybody?</span>
+            <span>{{ chat.message }}</span>
           </div>
           <div class="svg-right">
             <svg height="13" width="8">
@@ -24,11 +25,12 @@
             </svg>
           </div>
         </li>
-
+    {% else %}
         <li class="message-received">
           <div class="message-row">
             <div class="avatar">
-              <a href="#"><img src="https://pbs.twimg.com/profile_images/508601156767997952/fFTdKUf2_400x400.jpeg"></a>
+              <a href="#"><img src="{% if chat.user.profile.profile_picture %}{{ chat.user.profile.profile_picture.url }}{% else %}/media/profile_pictures/default.jpg{% endif %}">
+</a>
             </div>
             <div class="svg-left">
               <svg height="13" width="8">
@@ -36,33 +38,15 @@
               </svg>
             </div>
             <div class="received-bubble">
-              <span>Not bad, thanks for asking! ...</span>
+              <span>{{ chat.message }}</span>
             </div>
           </div>
           <div class="meta-info">
-            <span class="user-name">Bart</span> <span class="user-handle">@bart</span>
+            <span class="user-name">{{ chat.user.username }}</span> <span class="user-handle">@{{ chat.user.username }}</span>
           </div>
         </li>
-
-        <li class="message-received">
-          <div class="message-row">
-            <div class="avatar">
-              <a href="#"><img src="https://cdn.dribbble.com/userupload/12910688/file/original-d33b34f28a79a4b085edec17d83870ba.png"></a>
-            </div>
-            <div class="svg-left">
-              <svg height="13" width="8">
-                <path fill="white" d="M2.8,13L8,13L8,0.2C7.1,5.5,6.5,8.7,1.7,10.4C-1.6,11.5,1,13,2.8,13z"></path>
-              </svg>
-            </div>
-            <div class="received-bubble">
-              <span>Wonderful!</span>
-            </div>
-          </div>
-          <div class="meta-info">
-            <span class="user-name">Lilly</span> <span class="user-handle">@lilly</span>
-          </div>
-        </li>
-
+    {% endif %}
+    {% endfor %}
       </ul>
     </div>
 
