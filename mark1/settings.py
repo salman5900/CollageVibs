@@ -40,12 +40,14 @@ INSTALLED_APPS = [
     'main',
     'users',
     'globalchat',
+    'django_htmx',
 ]
 
 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django_htmx.middleware.HtmxMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

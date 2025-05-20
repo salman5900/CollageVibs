@@ -319,3 +319,15 @@ button:hover {
   outline: none;
   font-size: 1rem;
 }
+
+
+.chat-message {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s ease-out;
+  }
+
+.chat-message.appear {
+    opacity: 1;
+    transform: translateY(0);
+  }
