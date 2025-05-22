@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -17,8 +18,12 @@
     <script src="https://unpkg.com/htmx.org@1.9.5"></script>
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v=rage-mode">
     <script src="{% static 'js/main.js' %}" defer></script>
+
+    {% comment %} htmx websocket {% endcomment %}
+   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
 </head>
-<body>
+<body hx-ext="ws">
     {% if not hide_navbar %}
     <nav class="navbar">
         <div class="logo">

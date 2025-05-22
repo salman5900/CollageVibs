@@ -21,40 +21,63 @@
 
     <div class="chat-footer">
       <div class="input-wrapper">
-        <form id="chat_message_form"  class="input-form"
-        hx-post="{% url 'globalchat:global_chat' %}"
-        hx-target="#chat_messages"
-        hx-swap="beforeend"
-        _="on htmx:beforeSend reset() me" >
+      <form id="chat_message_form" class="input-form"
+            hx-ext="ws"
+            ws-connect="/ws/globalchat/public-chat/"
+            ws-send
+            hx-swap="none"
+            _="on htmx:wsAfterSend reset() me">
           {% csrf_token %}
           {{ form.message }}
-        </form>
+      </form>
       </div>
     </div>
   </div>
 </wrapper>
 <script>
-  document.body.addEventListener('htmx:afterSwap', (e) => {
-    const chatContainer = document.getElementById('chat_container');
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-  });
-    document.body.addEventListener('htmx:afterSwap', (e) => {
-    const chatContainer = document.getElementById('chat_container');
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-
-    // Add animation to the last message
+   // Function to scroll and animate
+  function handleNewMessage() {
+    // Add animation to the last message first
     const messages = document.querySelectorAll(".chat-message");
     const lastMessage = messages[messages.length - 1];
-    if (lastMessage) {
-      // Ensure it's freshly added
-      lastMessage.classList.add("appear");
-
-      // Optional: remove class after animation ends to allow retrigger
+    if (lastMessage && !lastMessage.classList.contains("appear")) {
+      // Trigger the appear animation
       setTimeout(() => {
-        lastMessage.classList.remove("new-message");
-      }, 500);
+        lastMessage.classList.add("appear");
+      }, 50); // Small delay to ensure the element is rendered
     }
+
+    // Scroll to bottom after animation starts
+    setTimeout(() => {
+      const chatContainer = document.getElementById('chat_container');
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }, 100);
+  }
+
+  // Listen for regular HTMX swaps (initial load, etc.)
+  document.body.addEventListener('htmx:afterSwap', handleNewMessage);
+  
+  // Listen for WebSocket out-of-band swaps
+  document.body.addEventListener('htmx:oobAfterSwap', handleNewMessage);
+  
+  // Alternative: Use MutationObserver to detect when new messages are added
+  const chatMessages = document.getElementById('chat_messages');
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+        // Check if a new message was added
+        const addedNode = mutation.addedNodes[0];
+        if (addedNode.nodeType === Node.ELEMENT_NODE && 
+            (addedNode.classList.contains('message-sent') || 
+             addedNode.classList.contains('message-received'))) {
+          handleNewMessage();
+        }
+      }
+    });
   });
+  
+  // Start observing
+  observer.observe(chatMessages, { childList: true });
 </script>
 
 
