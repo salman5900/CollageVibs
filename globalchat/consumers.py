@@ -17,17 +17,17 @@ class GlobalChatConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         message_text = text_data_json['message']
 
-        # Save message
+        # Save the message
         message = GlobalChatMessage.objects.create(
             user=self.user,
             message=message_text
         )
 
-        # Broadcast to all clients 
+        # Broadcast the message to all clients (including sender_channel_name to identify sender)
         event = {
             'type': 'chat_message',
             'message_id': message.id,
-            'sender_channel_name': self.channel_name, 
+            'sender_channel_name': self.channel_name,  # Identify sender
         }
         async_to_sync(self.channel_layer.group_send)(
             'global_chat',
@@ -41,21 +41,23 @@ class GlobalChatConsumer(WebsocketConsumer):
         )
 
     def chat_message(self, event):
-        # Skip sending to the sender again
-        if self.channel_name == event.get('sender_channel_name'):
-            return
+        # Avoid sending the message to the sender again (no duplicates!)
+        if self.channel_name != event.get('sender_channel_name'):
+            message_id = event['message_id']
+            message = GlobalChatMessage.objects.get(id=message_id)
+            context = {
+                'chat': message,
+                'user': self.user,
+            }
 
-        message_id = event['message_id']
-        message = GlobalChatMessage.objects.get(id=message_id)
-        context = {
-            'chat': message,
-            'user': self.user,
-        }
+            message_html = render_to_string('globalchat/global_chat_message.html', context=context)
 
-        # Render the message HTML
-        message_html = render_to_string('globalchat/global_chat_message.html', context=context)
+            oob_html = f"""
+            <div id="chat_messages" hx-swap-oob="beforeend">
+                <div class="chat-message new-message">
+                    {message_html}
+                </div>
+            </div>
+            """
 
-        # Wrap it with hx-swap-oob directive and class for animation
-        html_response = f'<div hx-swap-oob="beforeend:#chat_messages"><div class="chat-message">{message_html}</div></div>'
-
-        self.send(text_data=html_response)
+            self.send(text_data=oob_html)

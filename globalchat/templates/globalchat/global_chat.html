@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block content %}
-<wrapper class="wrapper">
-  <div id="chat_window" class="chat-window">
-    <div class="chat-header">
+<wrapper class="wrapper"> 
+  <div id="chat_window" class="chat-window"> 
+    <div class="chat-header"> 
       <span id="online-count" class="online-count">3</span>online
     </div>
 
@@ -21,12 +21,16 @@
 
     <div class="chat-footer">
       <div class="input-wrapper">
-      <form id="chat_message_form" class="input-form"
-            hx-ext="ws"
-            ws-connect="/ws/globalchat/public-chat/"
-            ws-send
-            hx-swap="none"
-            _="on htmx:wsAfterSend reset() me">
+      <form
+        id="chat_message_form"
+        class="input-form"
+        hx-ext="ws"
+        ws-connect="/ws/globalchat/public-chat/"
+        ws-send
+        hx-swap="afterend"   
+        hx-target="#chat_messages"  
+        _="on htmx:wsAfterSend reset() me">
+
           {% csrf_token %}
           {{ form.message }}
       </form>
@@ -34,51 +38,25 @@
     </div>
   </div>
 </wrapper>
+
 <script>
-   // Function to scroll and animate
+  // Animate and scroll when a new message arrives
   function handleNewMessage() {
-    // Add animation to the last message first
     const messages = document.querySelectorAll(".chat-message");
     const lastMessage = messages[messages.length - 1];
     if (lastMessage && !lastMessage.classList.contains("appear")) {
-      // Trigger the appear animation
       setTimeout(() => {
         lastMessage.classList.add("appear");
-      }, 50); // Small delay to ensure the element is rendered
+      }, 50);
     }
-
-    // Scroll to bottom after animation starts
     setTimeout(() => {
       const chatContainer = document.getElementById('chat_container');
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }, 100);
   }
 
-  // Listen for regular HTMX swaps (initial load, etc.)
+  // Listen for new message swaps from HTMX (initial load + OOB)
   document.body.addEventListener('htmx:afterSwap', handleNewMessage);
-  
-  // Listen for WebSocket out-of-band swaps
   document.body.addEventListener('htmx:oobAfterSwap', handleNewMessage);
-  
-  // Alternative: Use MutationObserver to detect when new messages are added
-  const chatMessages = document.getElementById('chat_messages');
-  const observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-        // Check if a new message was added
-        const addedNode = mutation.addedNodes[0];
-        if (addedNode.nodeType === Node.ELEMENT_NODE && 
-            (addedNode.classList.contains('message-sent') || 
-             addedNode.classList.contains('message-received'))) {
-          handleNewMessage();
-        }
-      }
-    });
-  });
-  
-  // Start observing
-  observer.observe(chatMessages, { childList: true });
 </script>
-
-
 {% endblock %}
