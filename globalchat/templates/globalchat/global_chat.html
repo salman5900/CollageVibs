@@ -5,58 +5,65 @@
 {% endblock %}
 
 {% block content %}
-<wrapper class="wrapper"> 
-  <div id="chat_window" class="chat-window"> 
-    <div class="chat-header"> 
-      <span id="online-count" class="online-count">3</span>online
+<wrapper class="wrapper">
+  <div id="chat_window" class="chat-window">
+    <div class="chat-header">
+      <span id="online-count" class="online-count">3</span> online
     </div>
 
     <div id="chat_container" class="chat-container">
       <ul id="chat_messages" class="chat-messages">
-    {% for chat in global_chat_messages reversed %}
-    {% include "globalchat/global_chat_message.html" %}
-    {% endfor %}
+        {% for chat in global_chat_messages reversed %}
+          {% include "globalchat/global_chat_message.html" %}
+        {% endfor %}
       </ul>
     </div>
 
     <div class="chat-footer">
       <div class="input-wrapper">
-      <form
-        id="chat_message_form"
-        class="input-form"
-        hx-ext="ws"
-        ws-connect="/ws/globalchat/public-chat/"
-        ws-send
-        hx-swap="afterend"   
-        hx-target="#chat_messages"  
-        _="on htmx:wsAfterSend reset() me">
-
+        <form id="chat_message_form" class="input-form">
           {% csrf_token %}
           {{ form.message }}
-      </form>
+          {% comment %} <button type="submit">Send</button> {% endcomment %}
+        </form>
       </div>
     </div>
   </div>
 </wrapper>
 
 <script>
-  // Animate and scroll when a new message arrives
-  function handleNewMessage() {
-    const messages = document.querySelectorAll(".chat-message");
-    const lastMessage = messages[messages.length - 1];
+  const socket = new WebSocket('ws://' + window.location.host + '/ws/globalchat/public-chat/');
+
+  socket.onmessage = function(event) {
+    const newMessageHtml = event.data; // Directly the <li> message
+    const container = document.getElementById('chat_messages');
+    container.insertAdjacentHTML('beforeend', newMessageHtml);
+
+    // Animate and scroll
+    const lastMessage = container.lastElementChild;
     if (lastMessage && !lastMessage.classList.contains("appear")) {
+      // Give it a slight delay for CSS transition to trigger
       setTimeout(() => {
         lastMessage.classList.add("appear");
-      }, 50);
+      }, 100);
     }
-    setTimeout(() => {
-      const chatContainer = document.getElementById('chat_container');
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    }, 100);
-  }
 
-  // Listen for new message swaps from HTMX (initial load + OOB)
-  document.body.addEventListener('htmx:afterSwap', handleNewMessage);
-  document.body.addEventListener('htmx:oobAfterSwap', handleNewMessage);
+    // Smooth scroll to bottom
+    const chatContainer = document.getElementById('chat_container');
+    chatContainer.scrollTo({
+      top: chatContainer.scrollHeight,
+      behavior: 'smooth'
+    });
+  };
+
+  document.getElementById('chat_message_form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const messageInput = this.querySelector('input[name="message"]');
+    const message = messageInput.value.trim();
+    if (message) {
+      socket.send(JSON.stringify({ 'message': message }));
+      messageInput.value = '';
+    }
+  });
 </script>
 {% endblock %}
