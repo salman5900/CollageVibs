@@ -8,7 +8,7 @@
 <wrapper class="wrapper">
   <div id="chat_window" class="chat-window">
     <div class="chat-header">
-      <span id="online-count" class="online-count">3</span> online
+      <span id="online-count" class="online-count"></span> online
     </div>
 
     <div id="chat_container" class="chat-container">
@@ -24,7 +24,6 @@
         <form id="chat_message_form" class="input-form">
           {% csrf_token %}
           {{ form.message }}
-          {% comment %} <button type="submit">Send</button> {% endcomment %}
         </form>
       </div>
     </div>
@@ -35,30 +34,41 @@
   const socket = new WebSocket('ws://' + window.location.host + '/ws/globalchat/public-chat/');
 
   socket.onmessage = function(event) {
-    const newMessageHtml = event.data; // Directly the <li> message
-    const container = document.getElementById('chat_messages');
-    container.insertAdjacentHTML('beforeend', newMessageHtml);
+    const incomingHtml = event.data.trim();
 
-    // Animate and scroll
-    const lastMessage = container.lastElementChild;
-    if (lastMessage && !lastMessage.classList.contains("appear")) {
-      // Give it a slight delay for CSS transition to trigger
-      setTimeout(() => {
-        lastMessage.classList.add("appear");
-      }, 100);
+    if (!incomingHtml) return;
+
+    // Check if it's an online count update
+    if (incomingHtml.includes('id="online-count"')) {
+      const onlineCountElement = document.getElementById('online-count');
+      if (onlineCountElement) {
+        onlineCountElement.outerHTML = incomingHtml;
+      }
+    } else {
+      const container = document.getElementById('chat_messages');
+      container.insertAdjacentHTML('beforeend', incomingHtml);
+
+      // Animate and scroll to bottom
+      const lastMessage = container.lastElementChild;
+      if (lastMessage && !lastMessage.classList.contains("appear")) {
+        setTimeout(() => {
+          lastMessage.classList.add("appear");
+        }, 100);
+      }
+
+      const chatContainer = document.getElementById('chat_container');
+      chatContainer.scrollTo({
+        top: chatContainer.scrollHeight,
+        behavior: 'smooth'
+      });
     }
-
-    // Smooth scroll to bottom
-    const chatContainer = document.getElementById('chat_container');
-    chatContainer.scrollTo({
-      top: chatContainer.scrollHeight,
-      behavior: 'smooth'
-    });
   };
 
   document.getElementById('chat_message_form').addEventListener('submit', function(e) {
     e.preventDefault();
     const messageInput = this.querySelector('input[name="message"]');
+    if (!messageInput) return;
+
     const message = messageInput.value.trim();
     if (message) {
       socket.send(JSON.stringify({ 'message': message }));

@@ -1,8 +1,8 @@
-from channels.generic.websocket import WebsocketConsumer 
-from django.template.loader import render_to_string 
-import json 
+from channels.generic.websocket import WebsocketConsumer
+from django.template.loader import render_to_string
+import json
 from asgiref.sync import async_to_sync
-from .models import GlobalChatMessage
+from .models import GlobalChatMessage, GlobalChatStatus
 
 class GlobalChatConsumer(WebsocketConsumer):
     def connect(self):
@@ -11,6 +11,15 @@ class GlobalChatConsumer(WebsocketConsumer):
             'global_chat',
             self.channel_name
         )
+
+        # Make sure GlobalChatStatus exists (singleton pattern)
+        status, _ = GlobalChatStatus.objects.get_or_create(pk=1)
+
+        # Add user to online users if not already online
+        if self.user not in status.user_online.all():
+            status.user_online.add(self.user)
+            self.Update_Online_Count(status)
+
         self.accept()
 
     def receive(self, text_data):
@@ -39,16 +48,36 @@ class GlobalChatConsumer(WebsocketConsumer):
             self.channel_name
         )
 
+        # Remove user from online users if they were online
+        status, _ = GlobalChatStatus.objects.get_or_create(pk=1)
+        if self.user in status.user_online.all():
+            status.user_online.remove(self.user)
+            self.Update_Online_Count(status)
+
     def chat_message(self, event):
-        print("Sending OOB update to:", self.channel_name)
         message_id = event['message_id']
         message = GlobalChatMessage.objects.get(id=message_id)
         context = {
             'chat': message,
-            'user': self.user,  # sender can see their own message styled correctly
+            'user': self.user,  # for styling (sender sees their own differently)
         }
 
-        # Just render the <li> message
+        # Render only the <li> element for the message
         message_html = render_to_string('globalchat/global_chat_message.html', context=context)
-
         self.send(text_data=message_html)
+
+    def Update_Online_Count(self, status):
+        online_count = status.user_online.count()
+        event = {
+            'type': 'online_count_handler',
+            'online_count': online_count
+        }
+        async_to_sync(self.channel_layer.group_send)(
+            'global_chat',
+            event
+        )
+
+    def online_count_handler(self, event):
+        online_count = event['online_count']
+        html = render_to_string('globalchat/online_count.html', {'online_count': online_count})
+        self.send(text_data=html)
