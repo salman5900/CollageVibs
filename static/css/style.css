@@ -78,6 +78,12 @@ main {
   background-position: 100% 50%;
 }
 
+.logout-button:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  filter: brightness(1.1);
+}
+
 /* ✅ Form Styles */
 form {
   display: flex;
@@ -121,6 +127,47 @@ button {
 button:hover {
   background-position: 100% 50%;
 }
+
+button:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  filter: brightness(1.1);
+}
+
+.edit-button {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.edit-button {
+  display: block; /* Let it be a block to center itself */
+  margin: 1em auto; /* Centers the button horizontally */
+  padding: 0.6em 1.2em; /* Adjust padding as needed */
+  width: fit-content; /* Only as wide as needed for the text */
+  background: linear-gradient(270deg, #00bcd4, #8e24aa, #6a1b9a);
+  background-size: 300%;
+  background-position: 0% 50%;
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  text-align: center; /* Center the text */
+  text-decoration: none; /* Remove underline */
+  transition: background-position 1s ease-in-out;
+}
+
+.edit-button:hover {
+  background-position: 100% 50%;
+}
+
+.edit-button:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  filter: brightness(1.1);
+}
+
 
 /* ✅ Custom Form */
 .custom-form {
@@ -331,3 +378,50 @@ button:hover {
     opacity: 1;
     transform: translateY(0);
   }
+
+  /* minimal-profile.css */
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.profile-image-container {
+  border: 4px solid #a855f7;
+  border-radius: 50%;
+  padding: 5px;
+  display: inline-block;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+}
+
+.profile-picture {
+  width: 200px; /* bigger! */
+  height: 200px; /* bigger! */
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.profile-info {
+  text-align: center;
+}
+
+.profile-name p {
+  font-size: 2rem; /* bigger text */
+  font-weight: 800;
+  margin: 0;
+}
+
+.profile-username {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.2rem; /* bigger username */
+  margin: 5px 0;
+}
+
+.profile-container button {
+  font-size: 1.2rem; /* bigger button text */
+  padding: 10px 20px;
+}
