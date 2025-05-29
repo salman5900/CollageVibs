@@ -93,3 +93,13 @@ def profile_edit_view(request):
         form = ProfileEditForm(initial=initial_data, instance=request.user)
 
     return render(request, 'users/edit_profile.html', {'form': form})
+
+
+@login_required
+def search_view(request):
+    profiles = Profile.objects.select_related('user').all()
+    query = request.GET.get('q')
+    if query:
+        profiles = profiles.filter(user__username__icontains=query)
+    profiles = profiles.exclude(user=request.user)
+    return render(request, 'users/search.html', {'profiles': profiles})
