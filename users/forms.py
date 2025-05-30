@@ -26,6 +26,8 @@ class CustomUserLoginForm(AuthenticationForm):
 
 from django.forms.widgets import ClearableFileInput
 
+class CustomClearableFileInput(ClearableFileInput):
+    template_name = 'users/custom_clearable_file_input.html'
 
 
 class ProfileEditForm(forms.ModelForm):
@@ -37,8 +39,10 @@ class ProfileEditForm(forms.ModelForm):
         required=True,
         help_text="Enter your 4-digit College ID"
     )
-    profile_picture = forms.ImageField(required=False)
-
+    profile_picture = forms.ImageField(
+    required=False,
+    widget=CustomClearableFileInput,
+    )
     class Meta:
         model = User
         fields = ['first_name', 'last_name']

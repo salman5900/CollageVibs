@@ -67,10 +67,10 @@ def profile_view(request):
     return render(request, 'users/profile.html', {
         'profile': profile,
     })
-
 @login_required
 def profile_edit_view(request):
     profile = Profile.objects.get(user=request.user)
+
     if request.method == 'POST':
         form = ProfileEditForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
@@ -79,7 +79,12 @@ def profile_edit_view(request):
 
             # Update the Profile part
             profile.college_id = form.cleaned_data.get('college_id')
-            profile.profile_picture = form.cleaned_data.get('profile_picture')
+
+            # Check if a new image is uploaded
+            if 'profile_picture' in request.FILES:
+                profile.profile_picture = request.FILES['profile_picture']
+            # Else: keep the existing image
+
             profile.save()
 
             return redirect('users:profile')
@@ -93,7 +98,6 @@ def profile_edit_view(request):
         form = ProfileEditForm(initial=initial_data, instance=request.user)
 
     return render(request, 'users/edit_profile.html', {'form': form})
-
 
 @login_required
 def search_view(request):

@@ -8,7 +8,6 @@ body {
   font-family: 'Inter', sans-serif;
   display: flex;
   flex-direction: column;
-  padding-top: 60px;
 }
 
 main {
@@ -244,13 +243,12 @@ button:active {
 .wrapper {
   display: block;
   width: 100%;
-  max-width: 50rem; /* width change here */
-  margin: 2.5rem auto;
-  padding: 1.5rem;
+  max-width: 80rem; /* width change here */
+  padding-top: 40px;
 }
 
 .chat-window {
-  height: 45rem;
+  height: 38rem;
   display: flex;
   flex-direction: column;
   background: linear-gradient(135deg, #34d399, #3b82f6); /* emerald-400 to blue-500 */
@@ -358,8 +356,6 @@ button:active {
   bottom: 0;
   z-index: 10;
   border-radius: 10px;
-  padding: 0.5rem 0;
-  background-color: rgba(31, 41, 55, 0.9); /* gray-800 with slight transparency */
 }
 
 .input-wrapper {
@@ -396,6 +392,7 @@ button:active {
   /* minimal-profile.css */
 
 .profile-container {
+  padding-top: 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -441,6 +438,10 @@ button:active {
 }
 
 /* Search bar */
+.search-container{
+  padding-top: 60px;
+}
+
 .user-search-container {
   display: flex;
   flex-direction: row;
@@ -654,4 +655,18 @@ button:active {
   .user-profile-container {
     width: 95%;
   }
+}
+
+.form-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 30px;
+
+}
+.login-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 80px;
 }

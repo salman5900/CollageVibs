@@ -5,7 +5,8 @@
 {% endblock %}
 
 {% block content %}
-<h1>Login</h1>
+<div class="login-container">
+    <h1>Login</h1>
 <form action="{% url 'users:login' %}" method="POST">
     {% csrf_token %}
     <label for="username">Username:</label>
@@ -21,4 +22,7 @@
     </a>
     
 </form>
+
+</div>
+
 {% endblock %}
