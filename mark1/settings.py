@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users',
     'globalchat',
     'django_htmx',
+    'noticeboard',
 ]
 
 

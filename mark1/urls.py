@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('users.urls')),
     path('home/', include('main.urls')),
     path('globalchat/', include('globalchat.urls')),
+    path('noticeboard/', include('noticeboard.urls')),
 
 ]
 
