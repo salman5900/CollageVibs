@@ -8,6 +8,7 @@ body {
   font-family: 'Inter', sans-serif;
   display: flex;
   flex-direction: column;
+  padding-top: 60px;
 }
 
 main {
@@ -21,12 +22,25 @@ main {
 }
 
 
+
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1em 2em;
   background-color: transparent;
+
+  /* Add these for fixed positioning */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 97%;
+  z-index: 1000;
+}
+
+.navbar.scrolled {
+  background: linear-gradient(120deg, rgba(43, 15, 63, 0.9) 0%, rgba(26, 26, 46, 0.9) 50%, rgba(15, 15, 45, 0.9) 100%); /* or any solid color you want */
+  transition: background 0.3s ease; /* Smooth transition */
 }
 
 
