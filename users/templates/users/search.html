@@ -3,9 +3,9 @@
   Search - CollageVibs
 {% endblock %}
 
-{% block content %} 
-<div> 
-  <form method="get" action="{% url 'users:search' %}" class="user-search-container"> 
+{% block content %}
+<div>
+  <form method="get" action="{% url 'users:search' %}" class="user-search-container">
     <input type="text" name="q" placeholder="Search for username..." class="user-search-input">
     <button type="submit" class="user-search-button">
       Search
@@ -21,14 +21,23 @@
           <img src="/media/profile_pictures/default.jpg" alt="Default profile picture" class="user-profile-picture">
         {% endif %}
       </div>
-      <div>
+      <!-- Wrap profile text in .profile-text for proper spacing and alignment -->
+      <div class="profile-text">
         <h3>{{ profile.user.first_name }} {{ profile.user.last_name }}</h3>
         <p>@{{ profile.user.username }}</p>
         <p>ID: {{ profile.college_id }}</p>
       </div>
+      <div class="dropdown">
+        <button class="dropbtn">Add</button>
+        <div class="dropdown-content">
+          <a href="#">Group 1</a>
+          <a href="#">Group 2</a>
+          <a href="#">Group 3</a>
+        </div>
+      </div>
     </div>
   {% empty %}
-    <p>No users found.</p> 
-  {% endfor %} 
-</div> 
+    <p>No users found.</p>
+  {% endfor %}
+</div>
 {% endblock %}

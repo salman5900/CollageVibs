@@ -488,3 +488,62 @@ button:active {
   margin: 4px 0;
   font-size: 0.9rem;
 }
+/* dropdwon */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn {
+  background-color: rgba(255, 255, 255, 0.1); /* Light transparent grey */
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 18px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropbtn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.05); /* Slightly transparent grey */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  min-width: 120px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  z-index: 1;
+  overflow: hidden;
+}
+
+.dropdown-content a {
+  color: #fff;
+  padding: 10px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-content a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.user-profile-container .profile-text {
+  margin-left: 16px;
+  flex-grow: 1; /* Takes up available space */
+}
+
+.user-profile-container .dropdown {
+  flex-shrink: 0;
+}
