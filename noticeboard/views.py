@@ -1,5 +1,6 @@
 from django.shortcuts import render
+from .models import Noticeboard
 
-# Create your views here.
 def noticeboard_view(request):
-    return render(request, "noticeboard/noticeboardHome.html")
+    notices = Noticeboard.objects.all().order_by('-created_at')
+    return render(request, "noticeboard/noticeboardHome.html", {"notices": notices})

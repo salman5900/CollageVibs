@@ -3,5 +3,20 @@
 {% block title %}NoticeBoard - CollageVibs{% endblock %}
 
 {% block content %}
-<h1>NoticeBoard</h1>
+<div class="NoticeBoard-OuterContainer">
+    {% for notice in notices %}
+    <div class="NoticeBoard-Container">
+        <h2>{{ notice.title }}</h2>
+        {% if notice.image %}
+            <img src="{{ notice.image.url }}" alt="{{ notice.title }}" />
+        {% endif %}
+        <p>{{ notice.content }}</p>
+        <div class="upload-time">
+            Uploaded At: {{ notice.created_at }}
+        </div>
+    </div>
+    {% empty %}
+    <p>No notices available at the moment. Please check back later!</p>
+    {% endfor %}
+</div>
 {% endblock %}

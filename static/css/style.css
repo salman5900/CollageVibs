@@ -678,3 +678,63 @@ button:active {
   align-items: center;
   padding-top: 80px;
 }
+
+/* NoticeBoard Styles */
+.NoticeBoard-OuterContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+.NoticeBoard-Container { 
+  background-color: rgba(255, 255, 255, 0.1); /* transparent grey like search bar */ 
+  border: 1px solid rgba(255, 255, 255, 0.15); 
+  border-radius: 20px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* subtle shadow */
+  color: #fff;
+  padding: 24px;
+  width: 100%;
+  max-width: 700px;
+  margin: 16px auto;
+  box-sizing: border-box;
+  position: relative; /* for positioning upload time */
+}
+
+.NoticeBoard-Container h2 {
+  margin: 0 0 16px 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.NoticeBoard-Container img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin: 16px 0;
+}
+
+.NoticeBoard-Container p {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 40px; /* leave space for time in bottom-right */
+}
+
+/* Upload time in bottom-right corner */
+.NoticeBoard-Container .upload-time {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  font-size: 0.85rem;
+  opacity: 0.8;
+  color: #ccc;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .NoticeBoard-Container {
+    width: 95%;
+    margin: 20px auto;
+    padding: 16px;
+  }
+}
