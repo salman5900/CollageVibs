@@ -153,35 +153,6 @@ button:active {
   padding: 0;
 }
 
-.edit-button {
-  display: block; /* Let it be a block to center itself */
-  margin: 1em auto; /* Centers the button horizontally */
-  padding: 0.6em 1.2em; /* Adjust padding as needed */
-  width: fit-content; /* Only as wide as needed for the text */
-  background: linear-gradient(270deg, #00bcd4, #8e24aa, #6a1b9a);
-  background-size: 300%;
-  background-position: 0% 50%;
-  color: white;
-  font-weight: bold;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  text-align: center; /* Center the text */
-  text-decoration: none; /* Remove underline */
-  transition: background-position 0.3s ease-in-out;
-}
-
-.edit-button:hover {
-  background-position: 100% 50%;
-}
-
-.edit-button:active {
-  transform: scale(0.97);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  filter: brightness(1.1);
-}
-
-
 /* ✅ Custom Form */
 .custom-form {
   display: flex;
@@ -213,6 +184,7 @@ button:active {
   width: 100%;
   box-sizing: border-box;
   font-family: 'Inter', sans-serif;
+  
 }
 
 .custom-form button {
@@ -239,6 +211,7 @@ button:active {
   list-style: none;
   padding: 0;
 }
+
 
 .wrapper {
   display: block;
@@ -389,7 +362,41 @@ button:active {
     transform: translateY(0);
   }
 
-  /* minimal-profile.css */
+/* minimal-profile.css */
+
+.AddNote-Container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.edit-button { 
+  display: block; /* Let it be a block to fill width */ 
+  padding: 0.6em 1.2em; /* Adjust padding as needed */ 
+  width: 100%; /* Full width */ 
+  background: linear-gradient(270deg, #00bcd4, #8e24aa, #6a1b9a); 
+  background-size: 300%; 
+  background-position: 0% 50%; 
+  color: white; 
+  font-weight: bold; 
+  border-radius: 6px; 
+  cursor: pointer; 
+  font-family: 'Inter', sans-serif; 
+  text-align: center; /* Center the text */ 
+  text-decoration: none; /* Remove underline */ 
+  transition: background-position 0.3s ease-in-out; 
+}
+
+.edit-button:hover { 
+  background-position: 100% 50%; 
+}
+
+.edit-button:active { 
+  transform: scale(0.97); 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+  filter: brightness(1.1); 
+}
 
 .profile-container {
   padding-top: 60px;

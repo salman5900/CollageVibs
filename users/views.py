@@ -41,6 +41,8 @@ def register_view(request):
     })
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('main:home')
     if request.method == 'POST':
         form = CustomUserLoginForm(request, data=request.POST)
         if form.is_valid():

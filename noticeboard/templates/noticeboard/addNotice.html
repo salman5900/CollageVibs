@@ -1,0 +1,14 @@
+{% extends "main/layout.html" %}
+
+{% block title %}Add Notice - CollageVibs{% endblock %}
+
+{% block content %}
+<div class="AddNote-Container">
+    <h2>Add a New Notice</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Notice</button>
+    </form>
+</div>
+{% endblock %}
