@@ -1,0 +1,20 @@
+{% extends "main/layout.html" %}
+
+{% block title %}Edit Notice - CollageVibs{% endblock %}
+
+{% block content %}
+<div class="AddNote-Container">
+    <h2>Editing Notice</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="id_title">Title:{{ form.title }}</label>
+        
+        <label for="id_image">Image:{{ form.image }}</label>
+        
+        <label for="id_content">Content:{{ form.content }}</label> 
+        
+        
+        <button type="submit">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

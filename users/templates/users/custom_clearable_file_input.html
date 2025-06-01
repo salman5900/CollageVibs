@@ -1,4 +1,8 @@
-
 <div class="custom-file-input">
-    <input type="file" name="{{ widget.name }}" {% include "django/forms/widgets/attrs.html" %}>
+  <input type="file" name="{{ widget.name }}" {% include "django/forms/widgets/attrs.html" %}>
 </div>
+
+<label>
+  <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}">
+  Remove the Current Profile Picture
+</label>

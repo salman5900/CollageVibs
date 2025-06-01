@@ -8,15 +8,31 @@
     <div class="NoticeBoard-Container">
         <h2>{{ notice.title }}</h2>
         {% if notice.image %}
-            <img src="{{ notice.image.url }}" alt="{{ notice.title }}" />
+            <img src="{{ notice.image.url }}" alt="{{ notice.title }}" class="notice-image" style="cursor: pointer;" />
         {% endif %}
         <p>{{ notice.content }}</p>
+        {% if notice.is_updated %}
+        <div class="upload-time">
+            Updated At: {{ notice.updated_at }}
+        </div>
+        {% else %}
         <div class="upload-time">
             Uploaded At: {{ notice.created_at }}
         </div>
+        {% endif %}
+
+
+
     </div>
     {% empty %}
     <p>No notices available at the moment. Please check back later!</p>
     {% endfor %}
 </div>
+
+<!-- Modal to show full-screen image -->
+<div id="imageModal" class="modal" style="display: none;">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="fullImage" />
+</div>
+
 {% endblock %}

@@ -1,0 +1,10 @@
+<div class="custom-file-input">
+  <input type="file" name="{{ widget.name }}" {% include "django/forms/widgets/attrs.html" %}>
+</div>
+
+{% if widget.is_initial %}
+  <label>
+    <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}">
+    Remove the Current Image
+  </label>
+{% endif %}

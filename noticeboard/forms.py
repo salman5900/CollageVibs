@@ -1,6 +1,9 @@
 from django import forms
 from .models import Noticeboard
+from django.forms.widgets import ClearableFileInput
 
+class CustomClear(ClearableFileInput):
+    template_name = 'noticeboard/clearablefile.html'
 class NoticeboardForm(forms.ModelForm):
     class Meta:
         model = Noticeboard
@@ -20,7 +23,7 @@ class NoticeboardForm(forms.ModelForm):
                 ),
                 'placeholder': 'Enter title',
             }),
-            'image': forms.ClearableFileInput(attrs={
+            'image': CustomClear(attrs={
                 'class': 'form-control',
                 'style': (
                     'width: 100%; '

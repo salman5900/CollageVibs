@@ -1,0 +1,43 @@
+{% extends "main/layout.html" %}
+
+{% block title %}My Notices - CollageVibs{% endblock %}
+
+{% block content %}
+<div class="NoticeBoard-OuterContainer">
+    {% for notice in notices %}
+    <div class="NoticeBoard-Container">
+        <div class="notice-title-container" style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>{{ notice.title }}</h2>
+            <div class="dropdown">
+                <div class="hamburger dropbtn">☰</div>
+                <div class="dropdown-content">
+                    <a href="{% url 'noticeboard:edit_notice' notice.slug %}">Edit</a>
+                    <a href="{% url 'noticeboard:delete_notice' notice.slug %}">Delete</a>
+                </div>
+            </div>
+        </div>
+        {% if notice.image %}
+            <img src="{{ notice.image.url }}" alt="{{ notice.title }}" class="notice-image" style="cursor: pointer;" />
+        {% endif %}
+        <p>{{ notice.content }}</p>
+        {% if notice.is_updated %}
+        <div class="upload-time">
+            Updated At: {{ notice.updated_at }}
+        </div>
+        {% else %}
+        <div class="upload-time">
+            Uploaded At: {{ notice.created_at }}
+        </div>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p>You have not added any notices yet.</p>
+    {% endfor %}
+</div>
+
+<!-- Modal to show full-screen image -->
+<div id="imageModal" class="modal" style="display: none;">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="fullImage" />
+</div>
+{% endblock %}
