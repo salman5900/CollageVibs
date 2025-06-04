@@ -3,50 +3,60 @@
 
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        {% block title %}
-          CollageVibs
-        {% endblock %}
-    </title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    {% block title %}CollageVibs{% endblock %}
+  </title>
 
-    {% comment %} Hypertext {% endcomment %}
-    <script src="https://unpkg.com/hyperscript.org@0.9.14"></script>
-    {% comment %} Htmx {% endcomment %}
-    <script src="https://unpkg.com/htmx.org@1.9.5"></script>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=rage-mode">
-    <script src="{% static 'js/main.js' %}" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/hyperscript.org@0.9.14"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.5"></script>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?v=rage-mode" />
+  <script src="{% static 'js/main.js' %}" defer></script>
 
-    {% comment %} htmx websocket {% endcomment %}
-   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
 </head>
 <body hx-ext="ws">
-    {% if not hide_navbar %}
+
+  {% if not hide_navbar %}
+    <!-- ✅ Your existing desktop navbar, untouched -->
     <nav class="navbar">
-        <div class="logo">
-            <h1>CollageVibs</h1>
-        </div>
-        <div class="nav-links">
-            <a href="{% url 'users:profile' %}">Profile</a>
-            <a href="{% url "users:search" %}">Search</a>
-            <a href="{% url "noticeboard:main" %}">NoticeBoard</a>
-        </div>
-        
-         
-        
-        <a href="{% url 'users:logout' %}" class="logout-button">logout</a>
-        
-         
-        
-        
+      <div class="logo">
+        <h1>CollageVibs</h1>
+      </div>
+      <div class="nav-links">
+        <a href="{% url 'users:profile' %}">Profile</a>
+        <a href="{% url 'users:search' %}">Search</a>
+        <a href="{% url 'noticeboard:main' %}">NoticeBoard</a>
+      </div>
+      <a href="{% url 'users:logout' %}" class="logout-button">logout</a>
     </nav>
-{% endif %}
-<main>
+
+    <!-- ✅ Mobile header (only shows on mobile) -->
+    <header class="mobile-header">
+      <div class="mobile-left">CollageVibs</div>
+      <div class="mobile-right">
+        <a href="{% url 'users:search' %}" class="icon">🔍</a>
+        <div class="icon">⋮</div>
+      </div>
+    </header>
+
+    <!-- ✅ Mobile footer (only shows on mobile) -->
+    <footer class="mobile-footer">
+      <a href="{% url 'main:home' %}" class="icon">🏠</a>
+      <a href="{% url 'users:search' %}" class="icon">🔍</a>
+      <a href="{% url 'noticeboard:add_notice' %}" class="icon">➕</a>
+      <a href="#" class="icon">❤️</a>
+      <a href="{% url 'users:profile' %}" class="icon">👤</a>
+    </footer>
+  {% endif %}
+
+  <main>
     {% block content %}
     {% endblock %}
-</main>
+  </main>
+
 </body>
 </html>
