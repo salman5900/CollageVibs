@@ -9,6 +9,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow-x: clip;
+  background-color: #0d0b1f;
 }
 
 main {
@@ -454,6 +455,7 @@ button:active {
   min-height: 100vh; /* ensure full viewport height, so flex works */
   box-sizing: border-box;
   padding-top: 60px; /* adjust if navbar overlaps */
+  margin-bottom: 50px;
 }
 
 .user-search-container {
@@ -657,7 +659,7 @@ button:active {
   flex-shrink: 0;
 }
 
-/* Ensure images don’t distort */
+/* Ensure images don't distort */
 .user-profile-picture {
   width: 70px;
   height: 70px;
@@ -724,6 +726,7 @@ button:active {
   align-items: center;
   margin-top: 50px;
   width: 100%;
+  margin-bottom: 50px;
 }
 .NoticeBoard-Container { 
   background-color: rgba(255, 255, 255, 0.1); /* transparent grey like search bar */ 
@@ -778,7 +781,6 @@ button:active {
   }
 }
 
-/* my notice */
 
 /* dropdown of my notice */
 .dropdown {
@@ -840,13 +842,16 @@ button:active {
   display: none;
 }
 
-
 /* ✅ Mobile header and footer (only on mobile) */
 @media (max-width: 768px) {
 
   /* ✅ Hide desktop nav */
   .navbar {
     display: none;
+  }
+
+  .search-container{
+    min-width: 100%;
   }
 
   /* ✅ Prevent white line issues */
@@ -875,6 +880,7 @@ button:active {
     z-index: 999;
     overflow: hidden;
   }
+  
 
   /* ✅ Mobile footer */
   .mobile-footer {
@@ -894,7 +900,7 @@ button:active {
     z-index: 999;
     overflow: hidden;
   }
-
+  
   /* ✅ Icon style shared between header/footer */
   .mobile-header .icon,
   .mobile-footer .icon {
@@ -925,4 +931,110 @@ button:active {
     gap: 1rem;
   }
 
+  /* ✅ MOBILE FORM WIGGLE FIX - ADDED */
+  input[type="text"],
+  input[type="email"], 
+  input[type="password"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="search"],
+  textarea,
+  select {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    transform: translateZ(0); /* Force hardware acceleration */
+    background-clip: padding-box;
+  }
+
+  /* Prevent viewport shifting */
+  body {
+    overflow-x: hidden !important;
+    position: relative;
+    width: 100% !important;
+  }
+
+  /* Stabilize form containers */
+  form,
+  .custom-form,
+  .form-container,
+  .login-container {
+    transform: translateZ(0); /* Hardware acceleration */
+    backface-visibility: hidden; /* Prevent flickering */
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Fix for search containers specifically */
+  .user-search-container {
+    transform: translateZ(0);
+    will-change: transform; /* Optimize for animations */
+    position: relative;
+    width: 100%;
+    max-width: 95%;
+    margin: 0 auto;
+  }
+
+  .user-search-input {
+    font-size: 16px !important; /* Critical for preventing zoom */
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    transform: translateZ(0);
+  }
+
+  /* Additional stability for input focus */
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    transform: translateZ(0);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Fix for custom form inputs */
+  .custom-form input,
+  .custom-form select, 
+  .custom-form textarea {
+    font-size: 16px !important;
+    width: 100%;
+    box-sizing: border-box;
+    transform: translateZ(0);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Chat input fix */
+  .input-form input[type="text"] {
+    font-size: 16px !important;
+    transform: translateZ(0);
+    width: 100%;
+  }
+
+  /* Container stability */
+  .wrapper,
+  main {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    overflow-x: hidden;
+  }
+
+  /* Prevent elastic scrolling issues on iOS */
+  body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+  }
+
+
+
+}
+
+.home-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  padding: 0.5rem;
+  height: 80vh;
 }

@@ -38,7 +38,7 @@ class NoticeboardForm(forms.ModelForm):
             }),
             'content': forms.Textarea(attrs={
                 'class': 'form-control',
-                'rows': 4,
+                'rows': 13,
                 'style': (
                     'width: 100%; '
                     'margin: 0.5em 0; '
