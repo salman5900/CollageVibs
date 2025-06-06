@@ -1,0 +1,10 @@
+# Ignore virtual env, DB, etc.
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.log
+db.sqlite3
+.env
