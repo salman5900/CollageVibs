@@ -1,0 +1,134 @@
+{% extends "main/layout.html" %}
+
+{% block title %} 
+    {{ club.name }} | Club Chat 
+{% endblock %} 
+
+{% block content %}
+<style>
+  .chat-messages li {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .chat-messages li.appear {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<wrapper class="wrapper">
+  <div id="chat_window" class="chat-window">
+    <div class="chat-header">
+      {{ club.name }} - Club Chat
+    </div>
+
+    <div id="chat_container" class="chat-container">
+      <ul id="chat_messages" class="chat-messages">
+        <!-- Messages will be added via WebSocket -->
+      </ul>
+    </div>
+
+    <div class="chat-footer">
+      <div class="input-wrapper">
+        <form id="chat_message_form" class="input-form">
+          {% csrf_token %}
+          <input type="text" name="message" placeholder="Type your message..." required />
+        </form>
+      </div>
+    </div>
+  </div>
+</wrapper>
+
+<script>
+  const userUsername = "{{ user.username }}";
+  const userFirstName = "{{ user.first_name }}";
+  const userProfilePic = `{% if user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}/media/profile_pictures/default.jpg{% endif %}`;
+  const clubId = "{{ club.id }}";
+
+  const socket = new WebSocket('ws://' + window.location.host + '/ws/clubchat/' + clubId + '/');
+
+  socket.onmessage = function (event) {
+    const data = JSON.parse(event.data);
+    const container = document.getElementById('chat_messages');
+
+    const messageElement = document.createElement('li');
+
+    if (data.username === userUsername) {
+      // Sent message (current user)
+      messageElement.classList.add('message-sent');
+      messageElement.innerHTML = `
+        <div class="sent-bubble">
+          <span>${data.message}</span>
+        </div>
+        <div class="svg-right">
+          <svg height="13" width="8">
+            <path fill="#bbf7d0" d="M6.3,10.4C1.5,8.7,0.9,5.5,0,0.2L0,13l5.2,0C7,13,9.6,11.5,6.3,10.4z"/>
+          </svg>
+        </div>
+        <div class="message-time">
+          <small>${data.timestamp}</small>
+        </div>
+      `;
+    } else {
+      // Received message (from other user)
+      messageElement.classList.add('message-received');
+      messageElement.innerHTML = `
+        <div class="message-row">
+          <div class="avatar">
+            <a href="#">
+              <img src="${data.profile_picture || '/media/profile_pictures/default.jpg'}" alt="avatar">
+            </a>
+          </div>
+          <div class="svg-left">
+            <svg height="13" width="8">
+              <path fill="white" d="M2.8,13L8,13L8,0.2C7.1,5.5,6.5,8.7,1.7,10.4C-1.6,11.5,1,13,2.8,13z"></path>
+            </svg>
+          </div>
+          <div class="received-bubble">
+            <span>${data.message}</span>
+          </div>
+        </div>
+        <div class="meta-info">
+          <span class="user-name">${data.first_name}</span>
+          <span class="user-handle">@${data.username}</span>
+          <span class="message-time"><small>${data.timestamp}</small></span>
+        </div>
+      `;
+    }
+
+    container.appendChild(messageElement);
+
+    setTimeout(() => {
+      messageElement.classList.add('appear');
+    }, 50);
+
+    scrollToBottom();
+  };
+
+  document.getElementById('chat_message_form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const messageInput = this.querySelector('input[name="message"]');
+    const message = messageInput.value.trim();
+    if (message) {
+      socket.send(JSON.stringify({
+        message: message
+      }));
+      messageInput.value = ''; 
+    } 
+  }); 
+
+  // Scroll to bottom when page loads
+  function scrollToBottom() {
+    const chatContainer = document.getElementById('chat_container');
+    chatContainer.scrollTo({
+      top: chatContainer.scrollHeight,
+      behavior: 'smooth'
+    });
+  }
+
+  // Call on page load
+  window.addEventListener('load', scrollToBottom);
+</script>
+{% endblock %}

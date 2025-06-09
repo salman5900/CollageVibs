@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'globalchat',
     'django_htmx',
     'noticeboard',
+    'clubs',
 ]
 
 

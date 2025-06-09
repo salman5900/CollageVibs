@@ -37,7 +37,6 @@
     const incomingHtml = event.data.trim();
     if (!incomingHtml) return;
 
-    // If it's an online count update
     if (incomingHtml.includes('id="online-count"')) {
       const onlineCountElement = document.getElementById('online-count');
       if (onlineCountElement) {
@@ -45,24 +44,7 @@
       }
     } else {
       const container = document.getElementById('chat_messages');
-
-      // Insert new message at the end
       container.insertAdjacentHTML('beforeend', incomingHtml);
-
-      // Get the newly added element
-      const lastMessage = container.lastElementChild;
-
-      // Add 'chat-message' class first (if not already added in HTML partials)
-      if (!lastMessage.classList.contains('chat-message')) {
-        lastMessage.classList.add('chat-message');
-      }
-
-      // Animate by adding 'appear' class after a short delay
-      setTimeout(() => {
-        lastMessage.classList.add('appear');
-      }, 50); // 50ms delay to ensure CSS transition triggers
-
-      // Smooth scroll to bottom
       const chatContainer = document.getElementById('chat_container');
       chatContainer.scrollTo({
         top: chatContainer.scrollHeight,
@@ -82,6 +64,10 @@
       messageInput.value = '';
     }
   });
-</script>
 
+  window.addEventListener('load', function() {
+    const chatContainer = document.getElementById('chat_container');
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  });
+</script>
 {% endblock %}

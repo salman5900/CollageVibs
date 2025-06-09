@@ -20,11 +20,16 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mark1.settings')
 
 django_asgi_app = get_asgi_application()
 
-from globalchat import routing
+from globalchat.routing import websocket_urlpatterns as globalchat_patterns
+from clubs.routing import websocket_urlpatterns as clubs_patterns
 
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
     "websocket": AllowedHostsOriginValidator(
-        AuthMiddlewareStack(URLRouter(routing.websocket_urlpatterns))
+        AuthMiddlewareStack(
+            URLRouter(
+                globalchat_patterns + clubs_patterns 
+            )
+        )
     ),
 })
