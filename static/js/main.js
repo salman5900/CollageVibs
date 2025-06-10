@@ -32,3 +32,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 });
+
+// ✅ Dropdown toggle logic using class 'show'
+document.querySelectorAll('.dropdown').forEach(dropdown => {
+  const button = dropdown.querySelector('.dropbtn');
+
+  button.addEventListener('click', function (e) {
+    e.stopPropagation();
+
+    // Close other dropdowns
+    document.querySelectorAll('.dropdown').forEach(other => {
+      if (other !== dropdown) other.classList.remove('show');
+    });
+
+    // Toggle this one
+    dropdown.classList.toggle('show');
+  });
+});
+
+// ✅ Close dropdowns when clicking outside
+document.addEventListener('click', function () {
+  document.querySelectorAll('.dropdown').forEach(drop => {
+    drop.classList.remove('show');
+  });
+});
