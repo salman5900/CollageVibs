@@ -4,6 +4,9 @@ from channels.db import database_sync_to_async
 from .models import Club, ClubMessage
 from django.utils import timezone
 
+# In-memory store to track online users per club
+club_online_store = {}
+
 class ClubChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.club_id = self.scope['url_route']['kwargs']['club_id']
@@ -18,6 +21,20 @@ class ClubChatConsumer(AsyncWebsocketConsumer):
                 self.channel_name
             )
             await self.accept()
+
+            # Add user to in-memory online store
+            if self.club_id not in club_online_store:
+                club_online_store[self.club_id] = set()
+            club_online_store[self.club_id].add(self.user.username)
+
+            # Broadcast updated online count
+            await self.channel_layer.group_send(
+                self.club_group_name,
+                {
+                    'type': 'online_count',
+                    'count': len(club_online_store[self.club_id]),
+                }
+            )
         else:
             await self.close()
 
@@ -26,6 +43,19 @@ class ClubChatConsumer(AsyncWebsocketConsumer):
             self.club_group_name,
             self.channel_name
         )
+
+        # Remove user from online store
+        if self.club_id in club_online_store and self.user.username in club_online_store[self.club_id]:
+            club_online_store[self.club_id].remove(self.user.username)
+
+            # Broadcast updated count
+            await self.channel_layer.group_send(
+                self.club_group_name,
+                {
+                    'type': 'online_count',
+                    'count': len(club_online_store[self.club_id]),
+                }
+            )
 
     async def receive(self, text_data):
         data = json.loads(text_data)
@@ -47,11 +77,18 @@ class ClubChatConsumer(AsyncWebsocketConsumer):
 
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({
+            'type': 'chat',
             'message': event['message'],
             'username': event['username'],
             'first_name': event['first_name'],
             'timestamp': event['timestamp'],
             'profile_picture': event['profile_picture'],
+        }))
+
+    async def online_count(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'online_count',
+            'count': event['count'],
         }))
 
     @database_sync_to_async

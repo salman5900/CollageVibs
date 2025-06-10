@@ -25,3 +25,10 @@ class ClubMessage(models.Model):
 
     class Meta:
         ordering = ['-timestamp']
+
+class ClubInvite(models.Model):
+    from_user = models.ForeignKey(User, related_name="sent_invites", on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name="received_invites", on_delete=models.CASCADE)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('declined', 'Declined')], default='pending')

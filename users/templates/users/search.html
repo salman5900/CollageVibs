@@ -30,9 +30,13 @@
       <div class="dropdown">
         <button class="dropbtn">Add</button>
         <div class="dropdown-content">
-          <a href="#">Group 1</a>
-          <a href="#">Group 2</a>
-          <a href="#">Group 3</a>
+          {% for club in your_clubs %}
+          <a href="{% url 'clubs:send_invite' club_id=club.id user_id=profile.user.id %}">
+          {{ club.name }}
+          </a>
+        {% empty %}
+          <span style="padding: 0.5rem 1rem; display: block;">No clubs created</span>
+        {% endfor %}
         </div>
       </div>
     </div>

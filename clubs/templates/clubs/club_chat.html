@@ -1,14 +1,14 @@
 {% extends "main/layout.html" %}
 
-{% block title %} 
-    {{ club.name }} | Club Chat 
-{% endblock %} 
+{% block title %}  
+    {{ club.name }} | Club Chat  
+{% endblock %}  
 
 {% block content %}
-<style>
-  .chat-messages li {
-    opacity: 0;
-    transform: translateY(10px);
+<style> 
+  .chat-messages li { 
+    opacity: 0; 
+    transform: translateY(10px); 
     transition: all 0.3s ease-in-out;
   }
 
@@ -21,12 +21,49 @@
 <wrapper class="wrapper">
   <div id="chat_window" class="chat-window">
     <div class="chat-header">
-      {{ club.name }} - Club Chat
+      <span id="online_count" class="online-count">0 online</span>
     </div>
 
     <div id="chat_container" class="chat-container">
       <ul id="chat_messages" class="chat-messages">
-        <!-- Messages will be added via WebSocket -->
+        {% for msg in messages %}
+          {% if msg.user == user %}
+            <li class="message-sent appear">
+              <div class="sent-bubble">
+                <span>{{ msg.message }}</span>
+              </div>
+              <div class="svg-right">
+                <svg height="13" width="8">
+                  <path fill="#bbf7d0" d="M6.3,10.4C1.5,8.7,0.9,5.5,0,0.2L0,13l5.2,0C7,13,9.6,11.5,6.3,10.4z"/>
+                </svg>
+              </div>
+              <div class="message-time">
+                <small>{{ msg.timestamp|date:"h:i A" }}</small>
+              </div>
+            </li>
+          {% else %}
+            <li class="message-received appear">
+              <div class="message-row">
+                <div class="avatar">
+                  <img src="{{ msg.user.profile.profile_picture.url|default:'/media/profile_pictures/default.jpg' }}" alt="avatar">
+                </div>
+                <div class="svg-left">
+                  <svg height="13" width="8">
+                    <path fill="white" d="M2.8,13L8,13L8,0.2C7.1,5.5,6.5,8.7,1.7,10.4C-1.6,11.5,1,13,2.8,13z"></path>
+                  </svg>
+                </div>
+                <div class="received-bubble">
+                  <span>{{ msg.message }}</span>
+                </div>
+              </div>
+              <div class="meta-info">
+                <span class="user-name">{{ msg.user.first_name }}</span>
+                <span class="user-handle">@{{ msg.user.username }}</span>
+                <span class="message-time"><small>{{ msg.timestamp|date:"h:i A" }}</small></span>
+              </div>
+            </li>
+          {% endif %}
+        {% endfor %}
       </ul>
     </div>
 
@@ -53,58 +90,60 @@
     const data = JSON.parse(event.data);
     const container = document.getElementById('chat_messages');
 
-    const messageElement = document.createElement('li');
+    if (data.type === 'chat') {
+      const messageElement = document.createElement('li');
 
-    if (data.username === userUsername) {
-      // Sent message (current user)
-      messageElement.classList.add('message-sent');
-      messageElement.innerHTML = `
-        <div class="sent-bubble">
-          <span>${data.message}</span>
-        </div>
-        <div class="svg-right">
-          <svg height="13" width="8">
-            <path fill="#bbf7d0" d="M6.3,10.4C1.5,8.7,0.9,5.5,0,0.2L0,13l5.2,0C7,13,9.6,11.5,6.3,10.4z"/>
-          </svg>
-        </div>
-        <div class="message-time">
-          <small>${data.timestamp}</small>
-        </div>
-      `;
-    } else {
-      // Received message (from other user)
-      messageElement.classList.add('message-received');
-      messageElement.innerHTML = `
-        <div class="message-row">
-          <div class="avatar">
-            <a href="#">
-              <img src="${data.profile_picture || '/media/profile_pictures/default.jpg'}" alt="avatar">
-            </a>
-          </div>
-          <div class="svg-left">
-            <svg height="13" width="8">
-              <path fill="white" d="M2.8,13L8,13L8,0.2C7.1,5.5,6.5,8.7,1.7,10.4C-1.6,11.5,1,13,2.8,13z"></path>
-            </svg>
-          </div>
-          <div class="received-bubble">
+      if (data.username === userUsername) {
+        messageElement.classList.add('message-sent');
+        messageElement.innerHTML = `
+          <div class="sent-bubble">
             <span>${data.message}</span>
           </div>
-        </div>
-        <div class="meta-info">
-          <span class="user-name">${data.first_name}</span>
-          <span class="user-handle">@${data.username}</span>
-          <span class="message-time"><small>${data.timestamp}</small></span>
-        </div>
-      `;
+          <div class="svg-right">
+            <svg height="13" width="8">
+              <path fill="#bbf7d0" d="M6.3,10.4C1.5,8.7,0.9,5.5,0,0.2L0,13l5.2,0C7,13,9.6,11.5,6.3,10.4z"/>
+            </svg>
+          </div>
+          <div class="message-time">
+            <small>${data.timestamp}</small>
+          </div>
+        `;
+      } else {
+        messageElement.classList.add('message-received');
+        messageElement.innerHTML = `
+          <div class="message-row">
+            <div class="avatar">
+              <img src="${data.profile_picture || '/media/profile_pictures/default.jpg'}" alt="avatar">
+            </div>
+            <div class="svg-left">
+              <svg height="13" width="8">
+                <path fill="white" d="M2.8,13L8,13L8,0.2C7.1,5.5,6.5,8.7,1.7,10.4C-1.6,11.5,1,13,2.8,13z"></path>
+              </svg>
+            </div>
+            <div class="received-bubble">
+              <span>${data.message}</span>
+            </div>
+          </div>
+          <div class="meta-info">
+            <span class="user-name">${data.first_name}</span>
+            <span class="user-handle">@${data.username}</span>
+            <span class="message-time"><small>${data.timestamp}</small></span>
+          </div>
+        `;
+      }
+
+      container.appendChild(messageElement);
+      setTimeout(() => {
+        messageElement.classList.add('appear');
+      }, 50);
+
+      scrollToBottom();
     }
 
-    container.appendChild(messageElement);
-
-    setTimeout(() => {
-      messageElement.classList.add('appear');
-    }, 50);
-
-    scrollToBottom();
+    // 🔥 Online count update
+    if (data.type === 'online_count') {
+      document.getElementById('online_count').innerText = `${data.count} online`;
+    }
   };
 
   document.getElementById('chat_message_form').addEventListener('submit', function (e) {
@@ -119,7 +158,6 @@
     } 
   }); 
 
-  // Scroll to bottom when page loads
   function scrollToBottom() {
     const chatContainer = document.getElementById('chat_container');
     chatContainer.scrollTo({
@@ -128,7 +166,6 @@
     });
   }
 
-  // Call on page load
   window.addEventListener('load', scrollToBottom);
 </script>
 {% endblock %}

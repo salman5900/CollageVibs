@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from .forms import CustomUserSignupForm, CustomUserLoginForm, ProfileEditForm
 from django.contrib.auth import login,logout
 from .models import Profile
+from clubs.models import Club
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 from django.contrib.auth import login
@@ -105,4 +106,5 @@ def search_view(request):
     if query:
         profiles = profiles.filter(user__username__icontains=query)
     profiles = profiles.exclude(user=request.user)
-    return render(request, 'users/search.html', {'profiles': profiles})
+    your_clubs = Club.objects.filter(admin=request.user)
+    return render(request, 'users/search.html', {'profiles': profiles, 'your_clubs': your_clubs})

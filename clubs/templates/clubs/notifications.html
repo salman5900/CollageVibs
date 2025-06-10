@@ -1,0 +1,15 @@
+{% extends "main/layout.html" %}
+{% block title %} Notifications {% endblock %}
+
+{% block content %}
+{% for invite in invites %}
+  <div class="invite-card">
+    <p>{{ invite.from_user.first_name }} invited you to join <b>{{ invite.club.name }}</b></p>
+    <a href="{% url 'clubs:respond_invite' invite.id 'accept' %}">Join</a>
+    <a href="{% url 'clubs:respond_invite' invite.id 'decline' %}">Decline</a> 
+  </div> 
+{% empty %} 
+  <p>No club invites right now.</p>
+{% endfor %}
+
+{% endblock %}
