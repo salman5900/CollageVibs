@@ -2,14 +2,28 @@
 {% block title %} Notifications {% endblock %}
 
 {% block content %}
+<div class="invite-wrapper">
 {% for invite in invites %}
   <div class="invite-card">
-    <p>{{ invite.from_user.first_name }} invited you to join <b>{{ invite.club.name }}</b></p>
-    <a href="{% url 'clubs:respond_invite' invite.id 'accept' %}">Join</a>
-    <a href="{% url 'clubs:respond_invite' invite.id 'decline' %}">Decline</a> 
-  </div> 
-{% empty %} 
-  <p>No club invites right now.</p>
-{% endfor %}
+    <div class="invite-profile-section">
+      {% if invite.from_user.profile.profile_picture %}
+        <img src="{{ invite.from_user.profile.profile_picture.url }}" alt="Profile picture" class="user-profile-picture">
+      {% else %}
+        <img src="/media/profile_pictures/default.jpg" alt="Default profile picture" class="user-profile-picture">
+      {% endif %}
+      <div>
+        <h3>{{ invite.from_user.first_name }}</h3>
+        <p>invited you to join <b>{{ invite.club.name }}</b></p>
+        <div class="invite-buttons">
+          <a href="{% url 'clubs:respond_invite' invite.id 'accept' %}" class="invite-btn accept">Join</a>
+          <a href="{% url 'clubs:respond_invite' invite.id 'decline' %}" class="invite-btn decline">Decline</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
+{% empty %}
+  <p class="no-invites-msg">No notifications for you...</p>
+{% endfor %}
+</div>
 {% endblock %}

@@ -1,11 +1,8 @@
-import json
+from .models import Club, ClubMessage, ClubChatStatus
 from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.db import database_sync_to_async
-from .models import Club, ClubMessage
+from asgiref.sync import sync_to_async, async_to_sync
+import json
 from django.utils import timezone
-
-# In-memory store to track online users per club
-club_online_store = {}
 
 class ClubChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -20,21 +17,15 @@ class ClubChatConsumer(AsyncWebsocketConsumer):
                 self.club_group_name,
                 self.channel_name
             )
+
+            # Ensure ClubChatStatus exists
+            self.status = await self.get_or_create_status()
+
+            # Add user to online list
+            await sync_to_async(self.status.user_online.add)(self.user)
+            await self.update_online_count()
+
             await self.accept()
-
-            # Add user to in-memory online store
-            if self.club_id not in club_online_store:
-                club_online_store[self.club_id] = set()
-            club_online_store[self.club_id].add(self.user.username)
-
-            # Broadcast updated online count
-            await self.channel_layer.group_send(
-                self.club_group_name,
-                {
-                    'type': 'online_count',
-                    'count': len(club_online_store[self.club_id]),
-                }
-            )
         else:
             await self.close()
 
@@ -44,34 +35,24 @@ class ClubChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-        # Remove user from online store
-        if self.club_id in club_online_store and self.user.username in club_online_store[self.club_id]:
-            club_online_store[self.club_id].remove(self.user.username)
-
-            # Broadcast updated count
-            await self.channel_layer.group_send(
-                self.club_group_name,
-                {
-                    'type': 'online_count',
-                    'count': len(club_online_store[self.club_id]),
-                }
-            )
+        self.status = await self.get_or_create_status()
+        await sync_to_async(self.status.user_online.remove)(self.user)
+        await self.update_online_count()
 
     async def receive(self, text_data):
         data = json.loads(text_data)
         message = data['message']
-
         await self.save_message(message)
 
         await self.channel_layer.group_send(
             self.club_group_name,
             {
-                "type": "chat_message",
-                "message": message,
-                "username": self.user.username,
-                "first_name": self.user.first_name,
-                "timestamp": timezone.now().strftime("%I:%M %p"),
-                "profile_picture": await self.get_profile_picture_url(), 
+                'type': 'chat_message',
+                'message': message,
+                'username': self.user.username,
+                'first_name': self.user.first_name,
+                'timestamp': timezone.now().strftime("%I:%M %p"),
+                'profile_picture': await self.get_profile_picture_url(),
             }
         )
 
@@ -91,7 +72,23 @@ class ClubChatConsumer(AsyncWebsocketConsumer):
             'count': event['count'],
         }))
 
-    @database_sync_to_async
+    async def update_online_count(self):
+        count = await sync_to_async(self.status.user_online.count)()
+        await self.channel_layer.group_send(
+            self.club_group_name,
+            {
+                'type': 'online_count',
+                'count': count
+            }
+        )
+
+    @sync_to_async
+    def get_or_create_status(self):
+        club = Club.objects.get(id=self.club_id)
+        status, _ = ClubChatStatus.objects.get_or_create(club=club)
+        return status
+
+    @sync_to_async
     def check_membership(self):
         try:
             club = Club.objects.get(id=self.club_id)
@@ -99,12 +96,12 @@ class ClubChatConsumer(AsyncWebsocketConsumer):
         except Club.DoesNotExist:
             return False
 
-    @database_sync_to_async
+    @sync_to_async
     def save_message(self, message):
         club = Club.objects.get(id=self.club_id)
         return ClubMessage.objects.create(club=club, user=self.user, message=message)
 
-    @database_sync_to_async
+    @sync_to_async
     def get_profile_picture_url(self):
         try:
             profile = self.user.profile
