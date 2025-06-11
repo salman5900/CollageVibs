@@ -20,9 +20,51 @@
 
 <wrapper class="wrapper">
   <div id="chat_window" class="chat-window">
-    <div class="chat-header">
-      <span id="online_count" class="online-count">0 online</span>
+    <div class="club-chat-header">
+
+  <!--  Members Dropdown -->
+<div class="members-dropdown-wrapper">
+  <a href="#" id="membersToggleBtn" class="members-toggle">Members ▾</a>
+
+  <div id="membersDropdown" class="members-dropdown hidden">
+    {% for member in club.members.all %}
+    <div class="member-entry">
+      <div class="entry-left">
+        {% if member.profile.profile_picture and member.profile.profile_picture.url %}
+          <img src="{{ member.profile.profile_picture.url }}" alt="{{ member.username }}" class="member-avatar">
+        {% else %}
+          <img src="/media/profile_pictures/default.jpg" alt="{{ member.username }}" class="member-avatar">
+        {% endif %}
+        <span class="member-username">@{{ member.username }}</span>
+      </div>
+
+      {% if request.user == club.admin and member != request.user %}
+      <div class="entry-right">
+        <form method="POST" action="{% url 'clubs:remove_member' club.id member.id %}" class="remove-member-form">
+          {% csrf_token %}
+          <button type="submit" class="remove-member-btn">Remove</button>
+        </form>
+      </div>
+      {% endif %}
     </div>
+
+    {% endfor %}
+  </div>
+</div>
+
+  <!--  Online Count -->
+  <span id="online_count" class="online-count">0 online</span>
+
+  <!--  Leave/Discard Button -->
+  <form id="leaveClubForm" method="POST" action="{% url 'clubs:leave_club' club.id %}" class="leave-club-form">
+    {% csrf_token %}
+    {% if request.user == club.admin %}
+      <button type="submit" id="leaveClubBtn" class="leave-club-button">Discard</button>
+    {% else %}
+      <button type="submit" id="leaveClubBtn" class="leave-club-button">Leave</button>
+    {% endif %}
+  </form>
+</div>
 
     <div id="chat_container" class="chat-container">
       <ul id="chat_messages" class="chat-messages">
@@ -71,7 +113,7 @@
       <div class="input-wrapper">
         <form id="chat_message_form" class="input-form">
           {% csrf_token %}
-          <input type="text" name="message" placeholder="Type your message..." required />
+          <input type="text" autocomplete="off" name="message" placeholder="Type your message..." required />
         </form>
       </div>
     </div>

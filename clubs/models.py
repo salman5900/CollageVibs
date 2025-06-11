@@ -7,6 +7,7 @@ class Club(models.Model):
     admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name='admin_clubs')
     members = models.ManyToManyField(User, related_name='clubs', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name

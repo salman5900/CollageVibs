@@ -109,3 +109,10 @@ class ClubChatConsumer(AsyncWebsocketConsumer):
                 return profile.profile_picture.url
         except:
             return None
+        
+    async def system_message(self, event):
+        await self.send(text_data=json.dumps({
+            "type": "system",
+            "message": event["message"],
+        }))
+

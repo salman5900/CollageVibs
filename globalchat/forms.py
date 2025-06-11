@@ -11,6 +11,7 @@ class GlobalChatCreateForm(ModelForm):
             'placeholder': 'Add message  ...',
             'maxlength': '300',
             'autofocus': True,
+            'autocomplete': 'off'
     }),
 }
 

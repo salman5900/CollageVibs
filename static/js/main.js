@@ -56,3 +56,33 @@ document.addEventListener('click', function () {
     drop.classList.remove('show');
   });
 });
+
+// Toggle members dropdown
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.getElementById("membersToggleBtn");
+  const dropdown = document.getElementById("membersDropdown");
+
+  toggleBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    dropdown.classList.toggle("show");
+
+    // Re-trigger animation for each entry
+    if (dropdown.classList.contains("show")) {
+      const entries = dropdown.querySelectorAll(".member-entry");
+      entries.forEach((entry, index) => {
+        entry.style.animationDelay = `${index * 0.05}s`;
+        entry.style.opacity = 0;
+        entry.classList.remove("animated"); // reset
+        void entry.offsetWidth; // trigger reflow
+        entry.classList.add("animated");
+      });
+    }
+  });
+
+  // 👇 Close dropdown when clicking outside of it
+  document.addEventListener("click", (e) => {
+    if (!dropdown.contains(e.target) && !toggleBtn.contains(e.target)) {
+      dropdown.classList.remove("show");
+    }
+  });
+});
