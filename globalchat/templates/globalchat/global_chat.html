@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-<wrapper class="wrapper">
+<div class="wrapper">
   <div id="chat_window" class="chat-window">
     <div class="chat-header">
       <span id="online-count" class="online-count"></span> online
@@ -24,11 +24,12 @@
         <form id="chat_message_form" class="input-form">
           {% csrf_token %}
           {{ form.message }}
+          <button type="submit" class="send-btn-mobile">➤</button>
         </form>
       </div>
     </div>
   </div>
-</wrapper>
+</div>
 
 <script>
   const socket = new WebSocket('ws://' + window.location.host + '/ws/globalchat/public-chat/');
@@ -44,7 +45,16 @@
       }
     } else {
       const container = document.getElementById('chat_messages');
+      const prevLastChild = container.lastElementChild;
+
       container.insertAdjacentHTML('beforeend', incomingHtml);
+
+      const newLastChild = container.lastElementChild;
+      if (newLastChild && newLastChild !== prevLastChild) {
+        // Add fade-in animation class after small delay
+        setTimeout(() => newLastChild.classList.add('appear'), 50);
+      }
+
       const chatContainer = document.getElementById('chat_container');
       chatContainer.scrollTo({
         top: chatContainer.scrollHeight,
@@ -68,6 +78,12 @@
   window.addEventListener('load', function() {
     const chatContainer = document.getElementById('chat_container');
     chatContainer.scrollTop = chatContainer.scrollHeight;
+
+    // Animate all messages on page load (optional)
+    document.querySelectorAll('#chat_messages li').forEach((el, i) => {
+      setTimeout(() => el.classList.add('appear'), i * 40);
+    });
   });
 </script>
+
 {% endblock %}

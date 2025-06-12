@@ -1341,3 +1341,90 @@ button:active {
     padding: 5px 10px;
   }
 }
+.send-btn-mobile {
+  display: none;
+}
+
+/* mobile chat view  */
+@media (max-width: 600px) {
+  .chat-window {
+    width: 100%;
+    height: 83vh;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .chat-footer {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+  }
+
+  .input-wrapper {
+    padding: 0.5rem 0.6rem;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    background-color: #2d3748;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  .input-form {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .input-form input[type="text"] {
+    flex: 1;
+    height: 2rem;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.85rem;
+    line-height: 1rem;
+    border: none;
+    border-radius: 6px;
+    background-color: #1f1f1f;
+    color: white;
+    min-width: 0;
+  }
+
+  #chat_message_form {
+    all: unset;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .send-btn-mobile {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    background-color: #7c3aed;
+    color: white;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .send-btn-mobile:hover {
+    background-color: #6d28d9;
+  }
+    .chat-footer {
+    position: static !important;  /* override any fixed/absolute */
+    bottom: auto !important;
+    z-index: 1;
+  }
+
+  .chat-window {
+    height: calc(91vh - 4rem); /* adjust if your footer is bigger/smaller */
+    overflow-y: auto;
+  }
+}

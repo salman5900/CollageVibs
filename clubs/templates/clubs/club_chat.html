@@ -18,7 +18,7 @@
   }
 </style>
 
-<wrapper class="wrapper">
+<div class="wrapper">
   <div id="chat_window" class="chat-window">
     <div class="club-chat-header">
 
@@ -114,11 +114,12 @@
         <form id="chat_message_form" class="input-form">
           {% csrf_token %}
           <input type="text" autocomplete="off" name="message" placeholder="Type your message..." required />
+          <button type="submit" class="send-btn-mobile">➤</button>
         </form>
       </div>
     </div>
   </div>
-</wrapper>
+</div>
 
 <script>
   const userUsername = "{{ user.username }}";
