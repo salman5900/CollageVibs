@@ -10,6 +10,7 @@
   </title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://unpkg.com/hyperscript.org@0.9.14"></script>
   <script src="https://unpkg.com/htmx.org@1.9.5"></script>
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
@@ -39,7 +40,7 @@
     <!-- ✅ Desktop Navbar -->
     <nav class="navbar">
       <div class="logo">
-        <h1>CollageVibs</h1>
+        <h1 onclick="goToHome()" style="cursor: pointer;">CollageVibs</h1>
       </div>
       <div class="nav-links">
         <a href="{% url 'users:profile' %}">Profile</a>
@@ -115,6 +116,10 @@
     {% block content %}
     {% endblock %}
   </main>
-
+<script>
+  function goToHome() {
+    window.location.href = "{% url 'main:home' %}";
+  }
+</script>
 </body>
 </html>

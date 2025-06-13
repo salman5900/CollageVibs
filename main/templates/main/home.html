@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="cv-home-container">
-  <div class="cv-chat-box">
+  <div onclick="goToGlobalChat()" class="cv-chat-box">
     <div class="cv-unread-bubble">3</div>
     <div class="cv-chat-content">
       <h1>Global Chat</h1>
@@ -16,7 +16,7 @@
   </div>
 
   {% for club in clubs %}
-    <div class="cv-chat-box">
+    <div onclick="goToClubChat({{ club.id }})" class="cv-chat-box">
       <div class="cv-unread-bubble">5</div>
       <div class="cv-chat-content">
         <h2>{{ club.name }}</h2>
@@ -27,5 +27,25 @@
       </div>
     </div>
   {% endfor %}
+    <div onclick="openCreateClubModal()" class="cv-chat-box cv-add-new-box">
+    <i data-lucide="plus"></i>
+    </div>
 </div>
+<script>
+function goToGlobalChat() {
+    window.location.href = "{% url 'globalchat:global_chat' %}";
+  }
+function goToClubChat(clubId) {
+    window.location.href = `/clubs/${clubId}`;
+  }
+function openCreateClubModal(){
+    window.location.href = "{% url 'clubs:create_club' %}";
+}
+
+lucide.createIcons();
+
+
+
+</script>
 {% endblock %}
+
