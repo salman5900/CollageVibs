@@ -1,19 +1,31 @@
 {% extends "main/layout.html" %}
-
+{% load custom_filters %}
 {% block title %}
     CollageVibs
 {% endblock %}
 
 {% block content %}
-<div class="home-container">
-<h1>Welcome to CollageVibs 🎓</h1>
-<p><strong>CollageVibs</strong> is a vibrant social media platform built exclusively for college students to connect, share, and grow together.</p>
+<div class="cv-home-container">
+  <div class="cv-chat-box">
+    <div class="cv-unread-bubble">3</div>
+    <div class="cv-chat-content">
+      <h1>Global Chat</h1>
+      <p class="cv-chat-desc">Open space for all college students</p>
+    </div>
+    <div class="cv-online-count">{{ online_users_global }} online</div>
+  </div>
 
-<p><em>Note:</em> This is an early-stage prototype currently under development. Some features are still in progress, and you might encounter a few bugs. This version is strictly for demo purposes and not intended for commercial use at this time.</p>
-
-<p>The Home Page which the page u are in right know  are still being built — stay tuned for exciting updates coming soon!</p>
+  {% for club in clubs %}
+    <div class="cv-chat-box">
+      <div class="cv-unread-bubble">5</div>
+      <div class="cv-chat-content">
+        <h2>{{ club.name }}</h2>
+        <p class="cv-chat-desc">{{ club.description }}</p>
+      </div>
+      <div class="cv-online-count">
+        {{ online_users_club|get_item:club.id }} online
+      </div>
+    </div>
+  {% endfor %}
 </div>
-
-
-
 {% endblock %}

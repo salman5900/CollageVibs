@@ -1428,3 +1428,94 @@ button:active {
     overflow-y: auto;
   }
 }
+
+/* Home Ui */
+/* CodeVibs Home Container */
+.cv-home-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Each individual chat/club box */
+.cv-chat-box {
+  position: relative;
+  background: linear-gradient(135deg, #1e1b2e, #3c345d);
+  border-radius: 20px;
+  padding: 1.5em;
+  width: 280px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(2px);
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.015);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+/* Hover float effect */
+.cv-chat-box:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Click/active press effect */
+.cv-chat-box:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Chat content area (title + description) */
+.cv-chat-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Title (Global Chat or Club Name) */
+.cv-chat-box h1,
+.cv-chat-box h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #f0f0ff;
+}
+
+/* Chat description */
+.cv-chat-desc {
+  margin-top: 0.3em;
+  font-size: 0.85rem;
+  color: #cbcbe4;
+  line-height: 1.3;
+}
+
+/* Online user count */
+.cv-online-count {
+  position: absolute;
+  bottom: 10px;
+  right: 15px;
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 8px;
+  border-radius: 12px;
+  color: #ddd;
+}
+
+/* Unread notification bubble */
+.cv-unread-bubble {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ff5e78;
+  color: white;
+  font-size: 0.7rem;
+  padding: 6px 10px;
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow: 0 0 0 2px #1a1a2e;
+}
