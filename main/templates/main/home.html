@@ -1,13 +1,15 @@
 {% extends "main/layout.html" %}
 {% load custom_filters %}
+
 {% block title %}
     CollageVibs
 {% endblock %}
 
 {% block content %}
 <div class="cv-home-container">
+  <!-- Global Chat Box -->
   <div onclick="goToGlobalChat()" class="cv-chat-box">
-    <div class="cv-unread-bubble">3</div>
+    <div id="global-unread" class="cv-unread-bubble" style="display: none;">0</div>
     <div class="cv-chat-content">
       <h1>Global Chat</h1>
       <p class="cv-chat-desc">Open space for all college students</p>
@@ -15,37 +17,103 @@
     <div class="cv-online-count">{{ online_users_global }} online</div>
   </div>
 
+  <!-- Club Chat Boxes -->
   {% for club in clubs %}
-    <div onclick="goToClubChat({{ club.id }})" class="cv-chat-box">
-      <div class="cv-unread-bubble">5</div>
+   <div onclick="goToClubChat({{ club.id }})" class="cv-chat-box {{ club.gradient_class }}">
+      <div id="club-unread-{{ club.id }}" class="cv-unread-bubble" style="display: none;">0</div>
       <div class="cv-chat-content">
         <h2>{{ club.name }}</h2>
-        <p class="cv-chat-desc">{{ club.description }}</p>
+        <p class="cv-chat-desc">{{ club.description|truncate_chars:150 }}</p>
       </div>
-      <div class="cv-online-count">
-        {{ online_users_club|get_item:club.id }} online
-      </div>
+      <div class="cv-online-count">{{ online_users_club|get_item:club.id }} online</div>
     </div>
   {% endfor %}
-    <div onclick="openCreateClubModal()" class="cv-chat-box cv-add-new-box">
+
+  <!-- Add New Club -->
+  <div onclick="openCreateClubModal()" class="cv-chat-box cv-add-new-box">
     <i data-lucide="plus"></i>
-    </div>
+  </div>
 </div>
+
 <script>
 function goToGlobalChat() {
+    sessionStorage.removeItem('global_unread');
+    updateUnreadUI('global-unread', 0);
     window.location.href = "{% url 'globalchat:global_chat' %}";
-  }
+}
+
 function goToClubChat(clubId) {
+    sessionStorage.removeItem(`club_unread_${clubId}`);
+    updateUnreadUI(`club-unread-${clubId}`, 0);
     window.location.href = `/clubs/${clubId}`;
-  }
+}
+
 function openCreateClubModal(){
     window.location.href = "{% url 'clubs:create_club' %}";
 }
 
 lucide.createIcons();
 
+const currentPath = window.location.pathname;
+
+// -- Only run if you're not already inside a chat room
+if (!currentPath.includes('/globalchat') && !currentPath.includes('/clubs/')) {
+
+  // ✅ GLOBAL CHAT SOCKET
+  const globalSocket = new WebSocket('ws://' + window.location.host + '/ws/globalchat/public-chat/');
+  let globalUnread = sessionStorage.getItem('global_unread') || 0;
+  updateUnreadUI('global-unread', globalUnread);
+
+  globalSocket.onmessage = function (event) {
+    const incoming = event.data.trim();
+    if (!incoming.includes('online-count')) {
+      globalUnread++;
+      sessionStorage.setItem('global_unread', globalUnread);
+      updateUnreadUI('global-unread', globalUnread);
+    }
+  };
+
+  // CLUB CHAT SOCKETS
+  const clubIds = [{% for club in clubs %}{{ club.id }},{% endfor %}];
+  clubIds.forEach(clubId => {
+    const socket = new WebSocket('ws://' + window.location.host + `/ws/clubchat/${clubId}/`);
+    let clubKey = `club_unread_${clubId}`;
+    let count = sessionStorage.getItem(clubKey) || 0;
+
+    updateUnreadUI(`club-unread-${clubId}`, count);
+
+    socket.onmessage = function (event) {
+      const data = JSON.parse(event.data);
+      if (data.type === 'chat') {
+        count++;
+        sessionStorage.setItem(clubKey, count);
+        updateUnreadUI(`club-unread-${clubId}`, count);
+      }
+    };
+  });
+
+  // Helper to update the bubble UI
+  function updateUnreadUI(id, count) {
+    const el = document.getElementById(id);
+    if (el) {
+      if (count > 0) {
+        el.style.display = 'block';
+        el.innerText = count;
+      } else {
+        el.style.display = 'none';
+      }
+    }
+  }
+}
+
+//  Reset unread count if already inside chat
+if (currentPath.includes('/globalchat')) {
+  sessionStorage.removeItem('global_unread');
+} else if (currentPath.includes('/clubs/')) {
+  const clubId = currentPath.split('/clubs/')[1];
+  if (clubId) sessionStorage.removeItem(`club_unread_${clubId}`);
+}
 
 
 </script>
 {% endblock %}
-

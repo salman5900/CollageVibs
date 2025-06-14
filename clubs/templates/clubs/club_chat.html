@@ -2,10 +2,10 @@
 
 {% block title %}  
     {{ club.name }} | Club Chat  
-{% endblock %}  
+{% endblock %}   
 
-{% block content %}
-<style> 
+{% block content %} 
+<style>  
   .chat-messages li { 
     opacity: 0; 
     transform: translateY(10px); 
@@ -22,49 +22,47 @@
   <div id="chat_window" class="chat-window">
     <div class="club-chat-header">
 
-  <!--  Members Dropdown -->
-<div class="members-dropdown-wrapper">
-  <a href="#" id="membersToggleBtn" class="members-toggle">Members ▾</a>
+      <!-- Members Dropdown -->
+      <div class="members-dropdown-wrapper">
+        <a href="#" id="membersToggleBtn" class="members-toggle">Members ▾</a>
 
-  <div id="membersDropdown" class="members-dropdown hidden">
-    {% for member in club.members.all %}
-    <div class="member-entry">
-      <div class="entry-left">
-        {% if member.profile.profile_picture and member.profile.profile_picture.url %}
-          <img src="{{ member.profile.profile_picture.url }}" alt="{{ member.username }}" class="member-avatar">
+        <div id="membersDropdown" class="members-dropdown hidden">
+          {% for member in club.members.all %}
+          <div class="member-entry">
+            <div class="entry-left">
+              {% if member.profile.profile_picture %}
+                <img src="{{ member.profile.profile_picture.url }}" alt="{{ member.username }}" class="member-avatar">
+              {% else %}
+                <img src="/media/profile_pictures/default.jpg" alt="{{ member.username }}" class="member-avatar">
+              {% endif %}
+              <span class="member-username">@{{ member.username }}</span>
+            </div>
+            {% if request.user == club.admin and member != request.user %}
+            <div class="entry-right">
+              <form method="POST" action="{% url 'clubs:remove_member' club.id member.id %}" class="remove-member-form">
+                {% csrf_token %}
+                <button type="submit" class="remove-member-btn">Remove</button>
+              </form>
+            </div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Online Count -->
+      <span id="online_count" class="online-count">0 online</span>
+
+      <!-- Leave/Discard Button -->
+      <form id="leaveClubForm" method="POST" action="{% url 'clubs:leave_club' club.id %}" class="leave-club-form">
+        {% csrf_token %}
+        {% if request.user == club.admin %}
+          <button type="submit" id="leaveClubBtn" class="leave-club-button">Discard</button>
         {% else %}
-          <img src="/media/profile_pictures/default.jpg" alt="{{ member.username }}" class="member-avatar">
+          <button type="submit" id="leaveClubBtn" class="leave-club-button">Leave</button>
         {% endif %}
-        <span class="member-username">@{{ member.username }}</span>
-      </div>
-
-      {% if request.user == club.admin and member != request.user %}
-      <div class="entry-right">
-        <form method="POST" action="{% url 'clubs:remove_member' club.id member.id %}" class="remove-member-form">
-          {% csrf_token %}
-          <button type="submit" class="remove-member-btn">Remove</button>
-        </form>
-      </div>
-      {% endif %}
+      </form>
     </div>
-
-    {% endfor %}
-  </div>
-</div>
-
-  <!--  Online Count -->
-  <span id="online_count" class="online-count">0 online</span>
-
-  <!--  Leave/Discard Button -->
-  <form id="leaveClubForm" method="POST" action="{% url 'clubs:leave_club' club.id %}" class="leave-club-form">
-    {% csrf_token %}
-    {% if request.user == club.admin %}
-      <button type="submit" id="leaveClubBtn" class="leave-club-button">Discard</button>
-    {% else %}
-      <button type="submit" id="leaveClubBtn" class="leave-club-button">Leave</button>
-    {% endif %}
-  </form>
-</div>
 
     <div id="chat_container" class="chat-container">
       <ul id="chat_messages" class="chat-messages">
@@ -87,7 +85,11 @@
             <li class="message-received appear">
               <div class="message-row">
                 <div class="avatar">
-                  <img src="{{ msg.user.profile.profile_picture.url|default:'/media/profile_pictures/default.jpg' }}" alt="avatar">
+                  {% if msg.user.profile.profile_picture %}
+                    <img src="{{ msg.user.profile.profile_picture.url }}" alt="avatar">
+                  {% else %}
+                    <img src="/media/profile_pictures/default.jpg" alt="avatar">
+                  {% endif %}
                 </div>
                 <div class="svg-left">
                   <svg height="13" width="8">
@@ -183,7 +185,6 @@
       scrollToBottom();
     }
 
-    // 🔥 Online count update
     if (data.type === 'online_count') {
       document.getElementById('online_count').innerText = `${data.count} online`;
     }

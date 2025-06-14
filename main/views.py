@@ -15,6 +15,9 @@ def home(request):
     statuses = ClubChatStatus.objects.filter(club__in=clubs).prefetch_related('user_online')
     online_users_club = {status.club.id: status.user_online.count() for status in statuses}
 
+    for i, club in enumerate(clubs):
+        club.gradient_class = f"gradient-{(i % 15) + 1}"
+
     context = {
         'online_users_global': online_users_global,
         'clubs': clubs,

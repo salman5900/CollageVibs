@@ -84,6 +84,21 @@
       setTimeout(() => el.classList.add('appear'), i * 40);
     });
   });
+
+  // Save scroll position on unload
+window.addEventListener('beforeunload', () => {
+  const chatContainer = document.getElementById('chat_container');
+  sessionStorage.setItem('chatScrollPos', chatContainer.scrollTop);
+});
+
+// Restore scroll position on load
+window.addEventListener('load', () => {
+  const chatContainer = document.getElementById('chat_container');
+  const savedScroll = sessionStorage.getItem('chatScrollPos');
+  if (savedScroll !== null) {
+    chatContainer.scrollTop = parseInt(savedScroll, 10);
+  }
+});
 </script>
 
 {% endblock %}
