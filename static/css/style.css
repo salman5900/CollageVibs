@@ -555,13 +555,21 @@ button:active {
   display: none;
   position: absolute;
   right: 0;
-  background-color: rgba(255, 255, 255, 0.05); /* Slightly transparent grey */
+  background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   min-width: 120px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-  z-index: 1;
+  z-index: 1000;
   overflow: hidden;
+  /* Default: dropdown */
+  top: 100%;
+}
+
+/* When tile is near bottom, make it dropup */
+.dropdown-content.dropup {
+  top: auto;
+  bottom: 100%;
 }
 
 .dropdown-content a {
@@ -657,7 +665,16 @@ button:active {
   color: #fff;
   box-sizing: border-box;
 }
-
+@media (max-width: 600px) {
+  .user-search-container {
+    height: auto !important; /* Keep search bar flexible */
+  }
+  
+  .user-profile-container {
+    min-height: 120px; /* Fixed height for result tiles only */
+    width: 95%;
+  }
+}
 /* Fix profile text alignment and spacing */
 .user-profile-container .profile-text {
   flex: 1;

@@ -86,3 +86,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
+// dropdown js 
+document.addEventListener('DOMContentLoaded', function() {
+  const dropdowns = document.querySelectorAll('.dropdown');
+  
+  dropdowns.forEach(dropdown => {
+    const dropbtn = dropdown.querySelector('.dropbtn');
+    const dropdownContent = dropdown.querySelector('.dropdown-content');
+    
+    dropbtn.addEventListener('click', function() {
+      // Get tile position
+      const rect = dropdown.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      // If tile is in bottom half of screen, make it dropup
+      if (rect.bottom > windowHeight / 2) {
+        dropdownContent.classList.add('dropup');
+      } else {
+        dropdownContent.classList.remove('dropup');
+      }
+      
+      // Toggle dropdown
+      dropdownContent.classList.toggle('show');
+    });
+  });
+});
