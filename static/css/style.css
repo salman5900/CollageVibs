@@ -1873,6 +1873,62 @@ button:active {
     from { opacity: 0; transform: translateY(20px); }
     to   { opacity: 1; transform: translateY(0); }
   }
+  
+  .social-buttons {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .social-btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 0.6rem;
+    background: #5e17eb;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(94, 23, 235, 0.2);
+    transition: all 0.3s ease-in-out;
+    font-size: 1rem;
+  }
+
+  .social-btn:hover {
+    transform: translateY(-2px);
+    background: #4b0ec8;
+    box-shadow: 0 6px 18px rgba(94, 23, 235, 0.3);
+  }
+
+  .social-btn.insta {
+    background: linear-gradient(45deg, #feda75, #d62976, #962fbf);
+    box-shadow: 0 4px 12px rgba(214, 41, 118, 0.3);
+  }
+
+  .social-btn.insta:hover {
+    background: linear-gradient(45deg, #feda75, #bc2a8d, #6f36b4);
+  }
+
+  .social-btn.github {
+    background: #333;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .social-btn.github:hover {
+    background: #24292e;
+  }
+
+  .social-btn.email {
+    background: #e91e63;
+    box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
+  }
+
+  .social-btn.email:hover {
+    background: #c2185b;
+  }
+
+
 
   /* ========== Responsive Mobile Optimizations ========== */
   @media (max-width: 767px) {
@@ -1903,6 +1959,7 @@ button:active {
       text-align: left;
       margin-top: 1.5rem;
     }
+    
   }
 
 /* End of about css */
