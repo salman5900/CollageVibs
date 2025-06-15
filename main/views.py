@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from globalchat.models import GlobalChatStatus
-from clubs.models import Club, ClubMessage, ClubInvite, ClubChatStatus
+from clubs.models import Club, ClubChatStatus
 from django.contrib.auth.decorators import login_required
 
 @login_required
@@ -25,3 +25,7 @@ def home(request):
     }
 
     return render(request, 'main/home.html', context)
+
+
+def about(request):
+    return render(request, 'main/about.html')

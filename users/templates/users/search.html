@@ -1,15 +1,11 @@
 {% extends "main/layout.html" %}
-{% block title %}
-  Search - CollageVibs
-{% endblock %}
+{% block title %}Search - CollageVibs{% endblock %}
 
 {% block content %}
-<div class="search-container">
+<div id="mainContent" class="search-container">
   <form method="get" action="{% url 'users:search' %}" class="user-search-container">
     <input type="text" name="q" placeholder="Search for username..." class="user-search-input">
-    <button type="submit" class="user-search-button">
-      Search
-    </button>
+    <button type="submit" class="user-search-button">Search</button>
   </form>
 
   {% for profile in profiles %}
@@ -21,7 +17,6 @@
           <img src="/media/profile_pictures/default.jpg" alt="Default profile picture" class="user-profile-picture">
         {% endif %}
       </div>
-      <!-- Wrap profile text in .profile-text for proper spacing and alignment -->
       <div class="profile-text">
         <h3>{{ profile.user.first_name }} {{ profile.user.last_name }}</h3>
         <p>@{{ profile.user.username }}</p>
@@ -31,12 +26,12 @@
         <button class="dropbtn">Add</button>
         <div class="dropdown-content">
           {% for club in your_clubs %}
-          <a href="{% url 'clubs:send_invite' club_id=club.id user_id=profile.user.id %}">
-          {{ club.name }}
-          </a>
-        {% empty %}
-          <span style="padding: 0.5rem 1rem; display: block;">No clubs created</span>
-        {% endfor %}
+            <a href="{% url 'clubs:send_invite' club_id=club.id user_id=profile.user.id %}">
+              {{ club.name }}
+            </a>
+          {% empty %}
+            <span style="padding: 0.5rem 1rem; display: block;">No clubs created</span>
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -44,4 +39,23 @@
     <p>No users found.</p>
   {% endfor %}
 </div>
+<script>
+  const mainContent = document.getElementById("mainContent");
+  const navType = performance.getEntriesByType("navigation")[0]?.type;
+  const shouldAnimate = sessionStorage.getItem("animateSearch");
+
+  if ((navType === "navigate" || navType === "back_forward") && shouldAnimate !== "false") {
+    mainContent.classList.add("page-fade-in");
+  }
+
+  // Reset animation trigger for next real visit
+  sessionStorage.setItem("animateSearch", "true");
+
+  // When a dropdown is clicked, stop animation on next refresh
+  document.addEventListener("click", function (e) {
+    if (e.target.closest(".dropdown-content a")) {
+      sessionStorage.setItem("animateSearch", "false");
+    }
+  });
+</script>
 {% endblock %}

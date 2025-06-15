@@ -5,20 +5,34 @@
 {% endblock %}
 
 {% block content %}
-<div class="profile-container">
+<style>
+    {% comment %} css added only for this page {% endcomment %}
+  body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+</style>
+
+<div class="profile-wrapper">
+  <div class="profile-container">
     <div class="profile-image-container">
-        <img src="{% if profile.profile_picture %}{{ profile.profile_picture.url }}{% else %}/media/profile_pictures/default.jpg{% endif %}" alt="Profile picture" class="profile-picture">
+      <img src="{% if profile.profile_picture %}{{ profile.profile_picture.url }}{% else %}/media/profile_pictures/default.jpg{% endif %}" alt="Profile picture" class="profile-picture">
     </div>
+
     <div class="profile-info">
-        <div class="profile-name">
-            <p>{{ profile.user.first_name }} {{ profile.user.last_name }}</p>
-        </div>
-        <p class="profile-username">@{{ profile.user.username }}</p>
-        <p>Collage ID: {{ profile.college_id }}</p>
+      <div class="profile-name">
+        <p>{{ profile.user.first_name }} {{ profile.user.last_name }}</p>
+      </div>
+      <p class="profile-username">@{{ profile.user.username }}</p>
+      <p class="college-id">Collage ID: {{ profile.college_id }}</p>
     </div>
-    <a class="edit-button" href="{% url 'users:profile_edit' %}">Edit</a>
-    <a class="edit-button" href="{% url 'noticeboard:add_notice' %}">Add Notice</a>
-    <a class="edit-button" href="{% url "noticeboard:my_notice" %}">My Notices</a>
-    
+
+    <div class="button-group">
+      <a class="edit-button" href="{% url 'users:profile_edit' %}">Edit</a>
+      <a class="edit-button" href="{% url 'noticeboard:add_notice' %}">Add Notice</a>
+      <a class="edit-button" href="{% url 'noticeboard:my_notice' %}">My Notices</a>
+    </div>
+  </div>
 </div>
 {% endblock %}
