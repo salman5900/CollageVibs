@@ -1455,8 +1455,7 @@ button:active {
   }
 }
 
-/* Home Ui */
-/* CodeVibs Home Container */
+/* Home Container */
 .cv-home-container {
   margin-top: 50px;
   display: flex;
@@ -1467,7 +1466,7 @@ button:active {
   padding: 2rem;
 }
 
-/* Each individual chat/club box */
+/* Chat Box Core Style */
 .cv-chat-box {
   position: relative;
   background: linear-gradient(135deg, #1e1b2e, #3c345d);
@@ -1480,32 +1479,67 @@ button:active {
   justify-content: flex-start;
   border: 1px solid rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(2px);
-  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.015);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+  animation: tilePopIn 0.5s ease forwards;
+  opacity: 0;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Hover float effect */
+/* Hover = Stand Up */
 .cv-chat-box:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transform: perspective(600px) rotateX(5deg) translateY(-10px);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+  filter: brightness(1.1);
 }
 
-/* Click/active press effect */
+/* Click = Press Down */
 .cv-chat-box:active {
-  transform: scale(0.97);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transform: perspective(600px) rotateX(0deg) translateY(2px) scale(0.98);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  filter: brightness(0.95);
 }
 
-/* Chat content area (title + description) */
+/* Stagger Pop-in Animation */
+.cv-chat-box:nth-child(1) { animation-delay: 0.1s; }
+.cv-chat-box:nth-child(2) { animation-delay: 0.2s; }
+.cv-chat-box:nth-child(3) { animation-delay: 0.3s; }
+.cv-chat-box:nth-child(4) { animation-delay: 0.4s; }
+.cv-chat-box:nth-child(5) { animation-delay: 0.5s; }
+.cv-chat-box:nth-child(6) { animation-delay: 0.6s; }
+.cv-chat-box:nth-child(7) { animation-delay: 0.7s; }
+.cv-chat-box:nth-child(8) { animation-delay: 0.8s; }
+.cv-chat-box:nth-child(9) { animation-delay: 0.9s; }
+.cv-chat-box:nth-child(10) { animation-delay: 1s; }
+.cv-chat-box:nth-child(11) { animation-delay: 1.1s; }
+.cv-chat-box:nth-child(12) { animation-delay: 1.2s; }
+.cv-chat-box:nth-child(13) { animation-delay: 1.3s; }
+.cv-chat-box:nth-child(14) { animation-delay: 1.4s; }
+.cv-chat-box:nth-child(15) { animation-delay: 1.5s; }
+.cv-chat-box:nth-child(16) { animation-delay: 1.6s; }
+
+
+/* Pop-in Keyframes */
+@keyframes tilePopIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Chat content (title + desc) */
 .cv-chat-content {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-/* Title (Global Chat or Club Name) */
 .cv-chat-box h1,
 .cv-chat-box h2 {
   margin: 0;
@@ -1514,14 +1548,14 @@ button:active {
   color: #f0f0ff;
 }
 
-/* Chat description */
 .cv-chat-desc {
   margin-top: 0.3em;
   font-size: 0.85rem;
   color: #cbcbe4;
   line-height: 1.3;
 }
-/* Online user count */
+
+/* Online User Count */
 .cv-online-count {
   position: absolute;
   bottom: 10px;
@@ -1533,7 +1567,7 @@ button:active {
   color: #ddd;
 }
 
-/* Unread notification bubble */
+/* Unread Bubble */
 .cv-unread-bubble {
   position: absolute;
   top: -8px;
@@ -1547,14 +1581,13 @@ button:active {
   box-shadow: 0 0 0 2px #1a1a2e;
 }
 
-/* Style for the Add New Card */
+/* Add New Club Tile */
 .cv-add-new-box {
   background: transparent;
   border: 2px dashed rgba(255, 255, 255, 0.15);
   justify-content: center;
   align-items: center;
 }
-
 
 .cv-add-circle i {
   width: 28px;
@@ -1563,7 +1596,7 @@ button:active {
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* gradient list */
+/* Gradients */
 .gradient-1  { background: linear-gradient(135deg, #1e1b2e, #2d2345); }
 .gradient-2  { background: linear-gradient(135deg, #2b2147, #3b2c5f); }
 .gradient-3  { background: linear-gradient(135deg, #3a2b52, #4a3d68); }
@@ -1580,45 +1613,12 @@ button:active {
 .gradient-14 { background: linear-gradient(135deg, #241c35, #3c2b5a); }
 .gradient-15 { background: linear-gradient(135deg, #2a203c, #402f5f); }
 
-/* mobile view home changes */
-
+/* Mobile Adjustments */
 @media (max-width: 600px) {
-  .cv-add-new-box{
+  .cv-add-new-box {
     margin-bottom: 20px;
   }
 }
-.cv-home-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  justify-content: center;
-  padding: 2rem;
-}
-/* Animation Keyframes for tile pop-in home */
-@keyframes tilePopIn {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* Apply animation to each box */
-.cv-chat-box {
-  animation: tilePopIn 0.5s ease forwards;
-  opacity: 0; /* Start hidden */
-}
-
-/* Optional: Stagger animation delays */
-.cv-chat-box:nth-child(1) { animation-delay: 0.1s; }
-.cv-chat-box:nth-child(2) { animation-delay: 0.2s; }
-.cv-chat-box:nth-child(3) { animation-delay: 0.3s; }
-.cv-chat-box:nth-child(4) { animation-delay: 0.4s; }
-.cv-chat-box:nth-child(5) { animation-delay: 0.5s; }
-/* ...and so on if you have more tiles */
 
 /* noticeboad animtions  */
 /* Container animation */
