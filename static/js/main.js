@@ -7,32 +7,6 @@ window.addEventListener('scroll', function() {
     navbar.classList.remove('scrolled');
   }
 });
-
-
-// js for full sreen notice borad
-document.addEventListener('DOMContentLoaded', function() {
-  const modal = document.getElementById("imageModal");
-  const modalImg = document.getElementById("fullImage");
-  const closeBtn = document.getElementsByClassName("close")[0];
-
-  const images = document.querySelectorAll('.notice-image');
-  images.forEach(img => {
-    img.addEventListener('click', function() {
-      modal.style.display = "block";
-      modalImg.src = this.src;
-    });
-  });
-
-  closeBtn.onclick = function() {
-    modal.style.display = "none";
-  }
-  window.onclick = function(event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  }
-});
-
 // ✅ Dropdown toggle logic using class 'show'
 document.querySelectorAll('.dropdown').forEach(dropdown => {
   const button = dropdown.querySelector('.dropbtn');
@@ -111,5 +85,54 @@ document.addEventListener('DOMContentLoaded', function() {
       // Toggle dropdown
       dropdownContent.classList.toggle('show');
     });
+  });
+});
+
+
+
+// notice board popup 
+document.addEventListener('DOMContentLoaded', function () {
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("fullImage");
+  const closeBtn = document.querySelector(".close");
+  const images = document.querySelectorAll(".notice-image");
+
+  images.forEach(function (img) {
+    img.addEventListener("click", function () {
+      const rect = img.getBoundingClientRect();  // Get image's location
+
+      // Show modal
+      modal.style.display = "block";
+      modalImg.src = this.src;
+
+      // Position modal image above the clicked image
+      modalImg.style.position = "absolute";
+      modalImg.style.top = `${rect.top + window.scrollY}px`;
+      modalImg.style.left = `${rect.left + window.scrollX}px`;
+      modalImg.style.width = `${rect.width}px`;
+      modalImg.style.height = `${rect.height}px`;
+
+      // Animate in
+      requestAnimationFrame(() => {
+        modalImg.style.transition = "all 0.3s ease";
+        modalImg.style.transform = "scale(1.2)";
+        modalImg.style.zIndex = 10001;
+      });
+
+      // Prevent scroll
+      document.body.classList.add("modal-open");
+    });
+  });
+
+  // Close logic
+  function closeModal() {
+    modal.style.display = "none";
+    document.body.classList.remove("modal-open");
+    modalImg.style.transform = "scale(1)";
+  }
+
+  closeBtn.addEventListener("click", closeModal);
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal) closeModal();
   });
 });

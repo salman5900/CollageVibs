@@ -716,36 +716,6 @@ button:active {
 }
 
 /* NoticeBoard Styles */
-
-/* Full sreen image  */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 9999;
-  padding-top: 60px;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.9);
-}
-.modal-content {
-  margin: auto;
-  display: block;
-  max-width: 90%;
-  max-height: 80vh;
-}
-.close {
-  position: absolute;
-  top: 15px;
-  right: 35px;
-  color: #fff;
-  font-size: 40px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
 .NoticeBoard-OuterContainer{
   display: flex;
   flex-direction: column;
@@ -1671,46 +1641,41 @@ button:active {
 }
 
 /* Modal full-screen image */
+/* Modal background */
 .modal {
+  display: none;
   position: fixed;
-  z-index: 999;
-  padding-top: 60px;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
+  z-index: 9999;
+  inset: 0; /* shorthand for top:0, left:0, right:0, bottom:0 */
   background-color: rgba(0, 0, 0, 0.8);
-  animation: fadeIn 0.4s ease;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
+/* The modal image */
 .modal-content {
-  margin: auto;
-  display: block;
-  max-width: 90%;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6);
+  transition: all 0.3s ease;
+  position: absolute; /* So we can position it dynamically */
+  max-width: 90vw;
   max-height: 80vh;
-  border-radius: 10px;
-  animation: popUp 0.3s ease;
 }
 
-@keyframes popUp {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
+/* The close button */
 .close {
-  position: absolute;
-  top: 30px;
-  right: 40px;
-  color: #fff;
-  font-size: 40px;
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  color: white;
+  font-size: 35px;
   font-weight: bold;
   cursor: pointer;
+  z-index: 10002;
+}
+
+/* Prevent body scroll when modal is open */
+body.modal-open {
+  overflow: hidden;
 }
 
 /* Animation for notification */
