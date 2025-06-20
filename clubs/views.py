@@ -6,6 +6,7 @@ from .forms import ClubCreateForm
 from django.contrib.auth.decorators import login_required
 from clubs.utils import notify_club_disbanded, notify_member_left
 from django.contrib import messages
+from django.utils import timezone
 
 # Create your views here.
 def club_chat(request, club_id):
@@ -37,18 +38,34 @@ def create_club(request):
 
     return render(request, 'clubs/create_club.html', {'form': form})
 
-
-@login_required
 def send_invite(request, club_id, user_id):
     club = get_object_or_404(Club, id=club_id)
     to_user = get_object_or_404(User, id=user_id)
 
-    # Only creator can invite
+    # Only club admin can invite
     if request.user != club.admin:
         return HttpResponseForbidden()
 
-    ClubInvite.objects.get_or_create(from_user=request.user, to_user=to_user, club=club)
-    return redirect('users:search')  # or return JsonResponse
+    # Prevent inviting already active members
+    if to_user in club.members.all():
+        return redirect('users:search')
+
+    # Check for existing invite
+    invite, created = ClubInvite.objects.get_or_create(
+        from_user=request.user,
+        to_user=to_user,
+        club=club,
+        defaults={'status': 'pending'}
+    )
+
+    if not created:
+        # If invite already exists, reset it
+        invite.status = 'pending'
+        invite.timestamp = timezone.now()
+        invite.save()
+
+    return redirect('users:search')
+
 
 @login_required
 def respond_invite(request, invite_id, response):

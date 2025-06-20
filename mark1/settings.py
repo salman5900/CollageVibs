@@ -82,11 +82,26 @@ TEMPLATES = [
 
 ASGI_APPLICATION = 'mark1.asgi.application'
 
+
+# Redis + Channels configuration
+import os
+
+REDIS_URL = os.getenv(
+    "REDIS_URL",
+    "rediss://default:AXdrAAIjcDFhY2I0YmVlMzQ0YjI0MWJmYjFiMTQ1NjRiZWU1NDVkY3AxMA@evolved-cricket-30571.upstash.io:6379"
+)
+
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [REDIS_URL],
+        },
     },
 }
+
+
+
 
 
 # Database
@@ -94,8 +109,12 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'salman5900',
+        'USER': 'salman5900',
+        'PASSWORD': 's@lman5900',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 

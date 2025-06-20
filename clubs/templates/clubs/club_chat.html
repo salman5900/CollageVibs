@@ -16,6 +16,16 @@
     opacity: 1;
     transform: translateY(0);
   }
+
+  .admin-badge {
+    background-color: gold;
+    color: black;
+    font-size: 0.7em;
+    padding: 2px 6px;
+    border-radius: 6px;
+    margin-left: 6px;
+    font-weight: bold;
+  }
 </style>
 
 <div class="wrapper">
@@ -36,6 +46,9 @@
                 <img src="/media/profile_pictures/default.jpg" alt="{{ member.username }}" class="member-avatar">
               {% endif %}
               <span class="member-username">@{{ member.username }}</span>
+              {% if member == club.admin and request.user != club.admin %}
+                <span class="admin-badge">👑 Admin</span>
+              {% endif %}
             </div>
             {% if request.user == club.admin and member != request.user %}
             <div class="entry-right">
