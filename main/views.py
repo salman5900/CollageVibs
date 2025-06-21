@@ -2,19 +2,21 @@ from django.shortcuts import render
 from globalchat.models import GlobalChatStatus
 from clubs.models import Club, ClubChatStatus
 from django.contrib.auth.decorators import login_required
+from .utils import get_global_online_count, get_club_online_counts
 
 @login_required
 def home(request):
-    # Global online count
-    online_users_global = GlobalChatStatus.objects.first().user_online.count() if GlobalChatStatus.objects.exists() else 0
-
-    # Active clubs the user is part of
+    # Get user clubs
     clubs = Club.objects.filter(is_active=True, members=request.user).order_by('name')
 
-    # Per club online user count
-    statuses = ClubChatStatus.objects.filter(club__in=clubs).prefetch_related('user_online')
-    online_users_club = {status.club.id: status.user_online.count() for status in statuses}
+    # Redis-based global count
+    online_users_global = get_global_online_count()
 
+    # Redis-based per-club online counts
+    club_ids = [club.id for club in clubs]
+    online_users_club = get_club_online_counts(club_ids)
+
+    # Add gradient class for UI
     for i, club in enumerate(clubs):
         club.gradient_class = f"gradient-{(i % 15) + 1}"
 

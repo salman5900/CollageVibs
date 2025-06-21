@@ -2,23 +2,21 @@ from channels.generic.websocket import WebsocketConsumer
 from django.template.loader import render_to_string
 import json
 from asgiref.sync import async_to_sync
-from .models import GlobalChatMessage, GlobalChatStatus
+from .models import GlobalChatMessage
+from .utils import redis_instance 
 
 class GlobalChatConsumer(WebsocketConsumer):
     def connect(self):
         self.user = self.scope['user']
+
         async_to_sync(self.channel_layer.group_add)(
             'global_chat',
             self.channel_name
         )
 
-        # Make sure GlobalChatStatus exists (singleton pattern)
-        status, _ = GlobalChatStatus.objects.get_or_create(pk=1)
+        redis_instance.sadd('global_online_users', str(self.user.id))
 
-        # Add user to online users if not already online
-        if self.user not in status.user_online.all():
-            status.user_online.add(self.user)
-            self.Update_Online_Count(status)
+        self.Update_Online_Count()
 
         self.accept()
 
@@ -26,13 +24,11 @@ class GlobalChatConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         message_text = text_data_json['message']
 
-        # Save the message
         message = GlobalChatMessage.objects.create(
             user=self.user,
             message=message_text
         )
 
-        # Broadcast the message to all clients
         event = {
             'type': 'chat_message',
             'message_id': message.id,
@@ -48,26 +44,25 @@ class GlobalChatConsumer(WebsocketConsumer):
             self.channel_name
         )
 
-        # Remove user from online users if they were online
-        status, _ = GlobalChatStatus.objects.get_or_create(pk=1)
-        if self.user in status.user_online.all():
-            status.user_online.remove(self.user)
-            self.Update_Online_Count(status)
+        
+        redis_instance.srem('global_online_users', str(self.user.id))
+   
+        self.Update_Online_Count()
 
     def chat_message(self, event):
         message_id = event['message_id']
         message = GlobalChatMessage.objects.get(id=message_id)
+
         context = {
             'chat': message,
-            'user': self.user,  # for styling (sender sees their own differently)
+            'user': self.user, 
         }
 
-        # Render only the <li> element for the message
         message_html = render_to_string('globalchat/global_chat_message.html', context=context)
         self.send(text_data=message_html)
 
-    def Update_Online_Count(self, status):
-        online_count = status.user_online.count()
+    def Update_Online_Count(self):
+        online_count = redis_instance.scard('global_online_users')
         event = {
             'type': 'online_count_handler',
             'online_count': online_count

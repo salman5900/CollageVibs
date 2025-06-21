@@ -1,8 +1,10 @@
-from .models import Club, ClubMessage, ClubChatStatus
 from channels.generic.websocket import AsyncWebsocketConsumer
-from asgiref.sync import sync_to_async, async_to_sync
+from asgiref.sync import sync_to_async
 import json
 from django.utils import timezone
+from .models import Club, ClubMessage
+from .utils import redis_instance
+ # Import Redis instance
 
 class ClubChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -18,11 +20,8 @@ class ClubChatConsumer(AsyncWebsocketConsumer):
                 self.channel_name
             )
 
-            # Ensure ClubChatStatus exists
-            self.status = await self.get_or_create_status()
-
-            # Add user to online list
-            await sync_to_async(self.status.user_online.add)(self.user)
+            # ➕ Add user to Redis set
+            await sync_to_async(redis_instance.sadd)(f"clubchat_online_{self.club_id}", self.user.id)
             await self.update_online_count()
 
             await self.accept()
@@ -35,8 +34,8 @@ class ClubChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-        self.status = await self.get_or_create_status()
-        await sync_to_async(self.status.user_online.remove)(self.user)
+        # ➖ Remove user from Redis set
+        await sync_to_async(redis_instance.srem)(f"clubchat_online_{self.club_id}", self.user.id)
         await self.update_online_count()
 
     async def receive(self, text_data):
@@ -73,7 +72,7 @@ class ClubChatConsumer(AsyncWebsocketConsumer):
         }))
 
     async def update_online_count(self):
-        count = await sync_to_async(self.status.user_online.count)()
+        count = await sync_to_async(redis_instance.scard)(f"clubchat_online_{self.club_id}")
         await self.channel_layer.group_send(
             self.club_group_name,
             {
@@ -81,12 +80,6 @@ class ClubChatConsumer(AsyncWebsocketConsumer):
                 'count': count
             }
         )
-
-    @sync_to_async
-    def get_or_create_status(self):
-        club = Club.objects.get(id=self.club_id)
-        status, _ = ClubChatStatus.objects.get_or_create(club=club)
-        return status
 
     @sync_to_async
     def check_membership(self):
@@ -109,10 +102,3 @@ class ClubChatConsumer(AsyncWebsocketConsumer):
                 return profile.profile_picture.url
         except:
             return None
-        
-    async def system_message(self, event):
-        await self.send(text_data=json.dumps({
-            "type": "system",
-            "message": event["message"],
-        }))
-
