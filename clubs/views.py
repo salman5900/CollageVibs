@@ -29,9 +29,10 @@ def club_chat(request, club_id):
     first_unread_index = None
     if last_seen_time:
         for i, msg in enumerate(messages):
-            if msg.timestamp > last_seen_time:
+            if msg.timestamp > last_seen_time and msg.user != request.user:
                 first_unread_index = i
                 break
+
     
     # NOW update the last seen time (after calculating unread messages)
     ClubChatSeen.objects.update_or_create(
