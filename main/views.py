@@ -5,7 +5,6 @@ from .utils import get_global_online_count, get_club_online_counts
 from globalchat.models import GlobalChatMessage, GlobalChatSeen
 from clubs.models import ClubChatSeen, ClubMessage
 from django.utils import timezone
-from django.db.models import Q
 
 @login_required
 def home(request):
@@ -15,28 +14,23 @@ def home(request):
     club_ids = [club.id for club in clubs]
     online_users_club = get_club_online_counts(club_ids)
 
-    # Global chat unread (excluding messages sent by current user)
+    # Global chat unread
     last_seen_obj = GlobalChatSeen.objects.filter(user=request.user).first()
     if last_seen_obj:
-        unread_global = GlobalChatMessage.objects.filter(
-            Q(timestamp__gt=last_seen_obj.last_seen) & ~Q(user=request.user)
-        ).count()
+        unread_global = GlobalChatMessage.objects.filter(timestamp__gt=last_seen_obj.last_seen).count()
     else:
-        unread_global = GlobalChatMessage.objects.exclude(user=request.user).count()
+        unread_global = GlobalChatMessage.objects.count()
 
-    # Club chat unread counts (excluding messages sent by current user)
+    # Club chat unread
     unread_club_counts = {}
     for club in clubs:
         seen_obj = ClubChatSeen.objects.filter(user=request.user, club=club).first()
         if seen_obj:
-            count = ClubMessage.objects.filter(
-                Q(club=club) & Q(timestamp__gt=seen_obj.last_seen) & ~Q(user=request.user)
-            ).count()
+            count = ClubMessage.objects.filter(club=club, timestamp__gt=seen_obj.last_seen).count()
         else:
-            count = ClubMessage.objects.filter(club=club).exclude(user=request.user).count()
+            count = ClubMessage.objects.filter(club=club).count()
         unread_club_counts[club.id] = count
 
-    # Assign gradient class to each club
     for i, club in enumerate(clubs):
         club.gradient_class = f"gradient-{(i % 15) + 1}"
 
@@ -49,8 +43,6 @@ def home(request):
     }
 
     return render(request, 'main/home.html', context)
-
-
 
 
 def about(request):
