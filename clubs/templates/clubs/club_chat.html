@@ -26,16 +26,35 @@
     margin-left: 6px;
     font-weight: bold;
   }
+  
+  #first_unread_marker {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #166534, transparent);
+    margin: 10px 0;
+    position: relative;
+  }
+
+  #first_unread_marker::before {
+    content: "New messages";
+    position: absolute;
+    left: 50%;
+    top: -10px;
+    transform: translateX(-50%);
+    background: #166534;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7em;
+    font-weight: bold;
+  }
 </style>
 
 <div class="wrapper">
   <div id="chat_window" class="chat-window">
     <div class="club-chat-header">
-
       <!-- Members Dropdown -->
       <div class="members-dropdown-wrapper">
         <a href="#" id="membersToggleBtn" class="members-toggle">Members ▾</a>
-
         <div id="membersDropdown" class="members-dropdown hidden">
           {% for member in club.members.all %}
           <div class="member-entry">
@@ -63,10 +82,8 @@
         </div>
       </div>
 
-      <!-- Online Count -->
       <span id="online_count" class="online-count">0 online</span>
 
-      <!-- Leave/Discard Button -->
       <form id="leaveClubForm" method="POST" action="{% url 'clubs:leave_club' club.id %}" class="leave-club-form">
         {% csrf_token %}
         {% if request.user == club.admin %}
@@ -80,6 +97,10 @@
     <div id="chat_container" class="chat-container">
       <ul id="chat_messages" class="chat-messages">
         {% for msg in messages %}
+          {% if forloop.counter0 == first_unread_index %}
+            <div id="first_unread_marker"></div>
+          {% endif %}
+
           {% if msg.user == user %}
             <li class="message-sent appear">
               <div class="sent-bubble">
@@ -191,11 +212,10 @@
       }
 
       container.appendChild(messageElement);
-      setTimeout(() => {
-        messageElement.classList.add('appear');
-      }, 50);
+      setTimeout(() => messageElement.classList.add('appear'), 50);
 
-      scrollToBottom();
+      const chatContainer = document.getElementById('chat_container');
+      chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
     if (data.type === 'online_count') {
@@ -208,21 +228,24 @@
     const messageInput = this.querySelector('input[name="message"]');
     const message = messageInput.value.trim();
     if (message) {
-      socket.send(JSON.stringify({
-        message: message
-      }));
+      socket.send(JSON.stringify({ message }));
       messageInput.value = ''; 
     } 
-  }); 
+  });
 
-  function scrollToBottom() {
+  window.addEventListener('load', () => {
     const chatContainer = document.getElementById('chat_container');
-    chatContainer.scrollTo({
-      top: chatContainer.scrollHeight,
-      behavior: 'smooth'
-    });
-  }
+    const marker = document.getElementById('first_unread_marker');
 
-  window.addEventListener('load', scrollToBottom);
+    if (marker) {
+      marker.scrollIntoView({ behavior: 'auto', block: 'center' });
+    } else {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    document.querySelectorAll('#chat_messages li').forEach((el, i) => {
+      setTimeout(() => el.classList.add('appear'), i * 40);
+    });
+  });
 </script>
 {% endblock %}

@@ -5,6 +5,24 @@
 {% endblock %}
 
 {% block content %}
+<style>
+  .chat-messages li {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .chat-messages li.new-message {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .chat-messages li.new-message.appear {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
 <div class="wrapper">
   <div id="chat_window" class="chat-window">
     <div class="chat-header">
@@ -45,14 +63,15 @@
       }
     } else {
       const container = document.getElementById('chat_messages');
-      const prevLastChild = container.lastElementChild;
+      const temp = document.createElement('div');
+      temp.innerHTML = incomingHtml;
 
-      container.insertAdjacentHTML('beforeend', incomingHtml);
-
-      const newLastChild = container.lastElementChild;
-      if (newLastChild && newLastChild !== prevLastChild) {
-        // Add fade-in animation class after small delay
-        setTimeout(() => newLastChild.classList.add('appear'), 50);
+      const newMessage = temp.firstElementChild;
+      if (newMessage) {
+        newMessage.classList.add('new-message');
+        container.appendChild(newMessage);
+        // Trigger animation
+        setTimeout(() => newMessage.classList.add('appear'), 20);
       }
 
       const chatContainer = document.getElementById('chat_container');
@@ -74,31 +93,14 @@
       messageInput.value = '';
     }
   });
-
-  window.addEventListener('load', function() {
+  window.addEventListener('load', () => {
     const chatContainer = document.getElementById('chat_container');
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-
-    // Animate all messages on page load (optional)
-    document.querySelectorAll('#chat_messages li').forEach((el, i) => {
-      setTimeout(() => el.classList.add('appear'), i * 40);
-    });
+    const savedScroll = sessionStorage.getItem('chatScrollPos');
+    if (savedScroll !== null) {
+      chatContainer.scrollTop = parseInt(savedScroll, 10);
+    } else {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
   });
-
-  // Save scroll position on unload
-window.addEventListener('beforeunload', () => {
-  const chatContainer = document.getElementById('chat_container');
-  sessionStorage.setItem('chatScrollPos', chatContainer.scrollTop);
-});
-
-// Restore scroll position on load
-window.addEventListener('load', () => {
-  const chatContainer = document.getElementById('chat_container');
-  const savedScroll = sessionStorage.getItem('chatScrollPos');
-  if (savedScroll !== null) {
-    chatContainer.scrollTop = parseInt(savedScroll, 10);
-  }
-});
 </script>
-
 {% endblock %}

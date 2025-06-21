@@ -34,8 +34,12 @@ class ClubInvite(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('declined', 'Declined')], default='pending')
 
+class ClubChatSeen(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    last_seen = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'club')
 
 
-class ClubChatStatus(models.Model):
-    club = models.OneToOneField('Club', on_delete=models.CASCADE)
-    user_online = models.ManyToManyField(User, blank=True)

@@ -9,7 +9,7 @@
 <div class="cv-home-container">
   <!-- Global Chat Box -->
   <div onclick="goToGlobalChat()" class="cv-chat-box">
-    <div id="global-unread" class="cv-unread-bubble" style="display: none;">0</div>
+    <div id="global-unread" class="cv-unread-bubble" style="{% if unread_global > 0 %}display: block;{% else %}display: none;{% endif %}">{{ unread_global }}</div>
     <div class="cv-chat-content">
       <h1>Global Chat</h1>
       <p class="cv-chat-desc">Open space for all college students</p>
@@ -19,14 +19,16 @@
 
   <!-- Club Chat Boxes -->
   {% for club in clubs %}
-   <div onclick="goToClubChat({{ club.id }})" class="cv-chat-box {{ club.gradient_class }}">
-      <div id="club-unread-{{ club.id }}" class="cv-unread-bubble" style="display: none;">0</div>
+    {% with unread_count=unread_club_counts|get_item:club.id %}
+    <div onclick="goToClubChat({{ club.id }})" class="cv-chat-box {{ club.gradient_class }}">
+      <div id="club-unread-{{ club.id }}" class="cv-unread-bubble" style="{% if unread_count > 0 %}display: block;{% else %}display: none;{% endif %}">{{ unread_count }}</div>
       <div class="cv-chat-content">
         <h2>{{ club.name }}</h2>
         <p class="cv-chat-desc">{{ club.description|truncate_chars:150 }}</p>
       </div>
       <div class="cv-online-count">{{ online_users_club|get_item:club.id }} online</div>
     </div>
+    {% endwith %}
   {% endfor %}
 
   <!-- Add New Club -->
@@ -56,12 +58,11 @@ lucide.createIcons();
 
 const currentPath = window.location.pathname;
 
-// -- Only run if you're not already inside a chat room
+// Only run if not inside a chat room
 if (!currentPath.includes('/globalchat') && !currentPath.includes('/clubs/')) {
-
-  // ✅ GLOBAL CHAT SOCKET
+  // GLOBAL CHAT SOCKET
   const globalSocket = new WebSocket('ws://' + window.location.host + '/ws/globalchat/public-chat/');
-  let globalUnread = sessionStorage.getItem('global_unread') || 0;
+  let globalUnread = sessionStorage.getItem('global_unread') || {{ unread_global|default:0 }};
   updateUnreadUI('global-unread', globalUnread);
 
   globalSocket.onmessage = function (event) {
@@ -74,23 +75,22 @@ if (!currentPath.includes('/globalchat') && !currentPath.includes('/clubs/')) {
   };
 
   // CLUB CHAT SOCKETS
-  const clubIds = [{% for club in clubs %}{{ club.id }},{% endfor %}];
-  clubIds.forEach(clubId => {
-    const socket = new WebSocket('ws://' + window.location.host + `/ws/clubchat/${clubId}/`);
-    let clubKey = `club_unread_${clubId}`;
-    let count = sessionStorage.getItem(clubKey) || 0;
+  {% for club in clubs %}
+    const socket{{ club.id }} = new WebSocket('ws://' + window.location.host + `/ws/clubchat/{{ club.id }}/`);
+    const clubKey{{ club.id }} = `club_unread_{{ club.id }}`;
+    let count{{ club.id }} = sessionStorage.getItem(clubKey{{ club.id }}) || {{ unread_club_counts|get_item:club.id|default:0 }};
 
-    updateUnreadUI(`club-unread-${clubId}`, count);
+    updateUnreadUI(`club-unread-{{ club.id }}`, count{{ club.id }});
 
-    socket.onmessage = function (event) {
+    socket{{ club.id }}.onmessage = function (event) {
       const data = JSON.parse(event.data);
       if (data.type === 'chat') {
-        count++;
-        sessionStorage.setItem(clubKey, count);
-        updateUnreadUI(`club-unread-${clubId}`, count);
+        count{{ club.id }}++;
+        sessionStorage.setItem(clubKey{{ club.id }}, count{{ club.id }});
+        updateUnreadUI(`club-unread-{{ club.id }}`, count{{ club.id }});
       }
     };
-  });
+  {% endfor %}
 
   // Helper to update the bubble UI
   function updateUnreadUI(id, count) {
@@ -106,14 +106,12 @@ if (!currentPath.includes('/globalchat') && !currentPath.includes('/clubs/')) {
   }
 }
 
-//  Reset unread count if already inside chat
+// Reset unread count if already inside chat
 if (currentPath.includes('/globalchat')) {
   sessionStorage.removeItem('global_unread');
 } else if (currentPath.includes('/clubs/')) {
   const clubId = currentPath.split('/clubs/')[1];
   if (clubId) sessionStorage.removeItem(`club_unread_${clubId}`);
 }
-
-
 </script>
 {% endblock %}

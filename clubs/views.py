@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from django.http import HttpResponseForbidden
-from .models import Club, ClubMessage, ClubInvite
+from .models import Club, ClubMessage, ClubInvite, ClubChatSeen
 from django.contrib.auth.models import User
 from .forms import ClubCreateForm 
 from django.contrib.auth.decorators import login_required
@@ -9,20 +9,45 @@ from django.contrib import messages
 from django.utils import timezone
 
 # Create your views here.
+@login_required
 def club_chat(request, club_id):
     club = get_object_or_404(Club, id=club_id)
-
+    
     if request.user not in club.members.all():
         return HttpResponseForbidden()
     
-    message = ClubMessage.objects.filter(club=club).order_by('timestamp')
-
-    content = {
+    # Get existing last seen time BEFORE updating it
+    try:
+        seen_obj = ClubChatSeen.objects.get(user=request.user, club=club)
+        last_seen_time = seen_obj.last_seen
+    except ClubChatSeen.DoesNotExist:
+        last_seen_time = None
+    
+    messages = ClubMessage.objects.filter(club=club).order_by('timestamp')
+    
+    # Determine first unread message index using the OLD last_seen_time
+    first_unread_index = None
+    if last_seen_time:
+        for i, msg in enumerate(messages):
+            if msg.timestamp > last_seen_time:
+                first_unread_index = i
+                break
+    
+    # NOW update the last seen time (after calculating unread messages)
+    ClubChatSeen.objects.update_or_create(
+        user=request.user,
+        club=club,
+        defaults={'last_seen': timezone.now()}
+    )
+    
+    context = {
         'club': club,
-        'messages': message,
+        'messages': messages,
+        'first_unread_index': first_unread_index,
     }
+    return render(request, 'clubs/club_chat.html', context)
 
-    return render(request, 'clubs/club_chat.html', content)
+
 
 def create_club(request):
     if request.method == 'POST':
