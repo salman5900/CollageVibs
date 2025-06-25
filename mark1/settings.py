@@ -88,8 +88,9 @@ import os
 
 REDIS_URL = os.getenv(
     "REDIS_URL",
-    "rediss://default:AXdrAAIjcDFhY2I0YmVlMzQ0YjI0MWJmYjFiMTQ1NjRiZWU1NDVkY3AxMA@evolved-cricket-30571.upstash.io:6379"
+    "redis://redis:6379"  # fallback to Docker service name
 )
+
 
 CHANNEL_LAYERS = {
     "default": {
@@ -107,16 +108,19 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'salman5900',
-        'USER': 'salman5900',
-        'PASSWORD': 's@lman5900',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv('DATABASE_NAME', 'salman5900'),
+        'USER': os.getenv('DATABASE_USER', 'salman5900'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', 's@lman5900'),
+        'HOST': os.getenv('DATABASE_HOST', 'db'),  # 'db' is the Docker Compose service name
+        'PORT': os.getenv('DATABASE_PORT', '5432'),
     }
 }
+
 
 
 # Password validation

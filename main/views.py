@@ -21,7 +21,7 @@ def home(request):
             timestamp__gt=last_seen_obj.last_seen
         ).exclude(user=request.user).count()
     else:
-        unread_global = GlobalChatMessage.objects.exclude(sender=request.user).count()
+        unread_global = GlobalChatMessage.objects.exclude(user=request.user).count()
 
     # Club chat unread – exclude messages sent by the user
     unread_club_counts = {}
@@ -33,7 +33,7 @@ def home(request):
                 timestamp__gt=seen_obj.last_seen
             ).exclude(user=request.user).count()
         else:
-            count = ClubMessage.objects.filter(club=club).exclude(sender=request.user).count()
+            count = ClubMessage.objects.filter(club=club).exclude(user=request.user).count() 
         unread_club_counts[club.id] = count
 
     for i, club in enumerate(clubs):
@@ -48,6 +48,7 @@ def home(request):
     }
 
     return render(request, 'main/home.html', context)
+
 
 
 def about(request):
