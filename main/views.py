@@ -14,21 +14,26 @@ def home(request):
     club_ids = [club.id for club in clubs]
     online_users_club = get_club_online_counts(club_ids)
 
-    # Global chat unread
+    #  Global chat unread – exclude messages sent by the user
     last_seen_obj = GlobalChatSeen.objects.filter(user=request.user).first()
     if last_seen_obj:
-        unread_global = GlobalChatMessage.objects.filter(timestamp__gt=last_seen_obj.last_seen).count()
+        unread_global = GlobalChatMessage.objects.filter(
+            timestamp__gt=last_seen_obj.last_seen
+        ).exclude(user=request.user).count()
     else:
-        unread_global = GlobalChatMessage.objects.count()
+        unread_global = GlobalChatMessage.objects.exclude(sender=request.user).count()
 
-    # Club chat unread
+    # Club chat unread – exclude messages sent by the user
     unread_club_counts = {}
     for club in clubs:
         seen_obj = ClubChatSeen.objects.filter(user=request.user, club=club).first()
         if seen_obj:
-            count = ClubMessage.objects.filter(club=club, timestamp__gt=seen_obj.last_seen).count()
+            count = ClubMessage.objects.filter(
+                club=club,
+                timestamp__gt=seen_obj.last_seen
+            ).exclude(user=request.user).count()
         else:
-            count = ClubMessage.objects.filter(club=club).count()
+            count = ClubMessage.objects.filter(club=club).exclude(sender=request.user).count()
         unread_club_counts[club.id] = count
 
     for i, club in enumerate(clubs):
