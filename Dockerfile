@@ -15,15 +15,15 @@ RUN pip install -r requirements.txt
 # Copy project files
 COPY . .
 
-# Collect static files
+# Collect static files (will be run again safely in entrypoint too)
 RUN python manage.py collectstatic --noinput
 
-# Copy entrypoint script
+# Copy entrypoint script and make it executable
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
-# Expose port
+# Expose Daphne's port
 EXPOSE 8000
 
-# Start via entrypoint
+# Start the app via the entrypoint script
 CMD ["/app/entrypoint.sh"]

@@ -1,12 +1,23 @@
 #!/bin/bash
 
-# Exit on error
 set -e
 
-# Run migrations
-echo "Running migrations..."
-python manage.py migrate
+echo "Running database migrations..."
+python manage.py migrate --noinput
 
-# Start the server
+echo "Checking if superuser exists..."
+python manage.py shell <<EOF
+from django.contrib.auth import get_user_model
+User = get_user_model()
+if not User.objects.filter(username='salman_ahamed').exists():
+    User.objects.create_superuser(username='salman_ahamed', email='', password='s@lman5900')
+    print("Superuser created.")
+else:
+    print("Superuser already exists.")
+EOF
+
+echo "Collecting static files..."
+python manage.py collectstatic --noinput
+
 echo "Starting Daphne server..."
-daphne -b 0.0.0.0 -p 8000 mark1.asgi:application
+exec daphne -b 0.0.0.0 -p 8000 mark1.asgi:application
