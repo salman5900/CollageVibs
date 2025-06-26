@@ -74,7 +74,9 @@
 </div>
 
 <script>
-  const socket = new WebSocket('ws://' + window.location.host + '/ws/globalchat/public-chat/');
+  const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+  const socket = new WebSocket(protocol + window.location.host + '/ws/globalchat/public-chat/');
+
 
   socket.onmessage = function(event) {
     const incomingHtml = event.data.trim();

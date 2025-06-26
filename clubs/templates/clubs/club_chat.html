@@ -163,7 +163,9 @@
   const userProfilePic = `{% if user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}/media/profile_pictures/default.jpg{% endif %}`;
   const clubId = "{{ club.id }}";
 
-  const socket = new WebSocket('ws://' + window.location.host + '/ws/clubchat/' + clubId + '/');
+  const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+  const socket = new WebSocket(protocol + window.location.host + '/ws/clubchat/' + clubId + '/');
+
 
   socket.onmessage = function (event) {
     const data = JSON.parse(event.data);
