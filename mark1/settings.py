@@ -29,7 +29,8 @@ DEBUG=False
 
 
 ALLOWED_HOSTS = ['mark1-gxc7.onrender.com', 'localhost', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['mark1-gxc7.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://mark1-gxc7.onrender.com']
+
 
 
 # Application definition
