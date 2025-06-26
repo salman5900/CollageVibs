@@ -14,6 +14,5 @@ COPY . .
 EXPOSE 8000
 
 RUN python manage.py collectstatic --noinput
-RUN python manage.py migrate
 
 CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "mark1.asgi:application"]
