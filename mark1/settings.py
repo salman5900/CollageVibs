@@ -28,8 +28,8 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 DEBUG=True
 
 
-ALLOWED_HOSTS = ['mark1-gxc7.onrender.com', 'localhost', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['https://mark1-gxc7.onrender.com']
+ALLOWED_HOSTS = ['mark1-pr3g.onrender.com','localhost','127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://mark1-pr3g.onrender.com']
 
 
 
