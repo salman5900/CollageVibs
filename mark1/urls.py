@@ -28,5 +28,9 @@ urlpatterns = [
     path('noticeboard/', include('noticeboard.urls')),
 
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Only for dev mode (if DEBUG=True)
+if settings.DEBUG:
+    urlpatterns += [
+        re_path(r'^(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
+    ]
 
