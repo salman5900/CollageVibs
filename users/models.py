@@ -9,7 +9,7 @@ class Profile(models.Model):
         validators=[MinValueValidator(1000), MaxValueValidator(9999)],
         help_text="4 digit college ID",
     )
-    profile_picture = models.ImageField(upload_to='profile_pictures',storage=MediaCloudinaryStorage(), null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures',storage=MediaCloudinaryStorage(), null=True, blank=True,default='default-profile-photo_e0dzna')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
