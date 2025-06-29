@@ -1,3 +1,26 @@
+/* Removes blue/gray tap highlight on iOS and Android */
+* {
+  -webkit-tap-highlight-color: transparent; /* iOS Safari + some Android browsers */
+  -webkit-focus-ring-color: transparent;    /* iOS internal outline */
+  -webkit-touch-callout: none;              /* Disables callout menu on long press (optional) */
+}
+
+/* Removes default focus styles (like outline/halo) on buttons and links */
+button, a, input, textarea, select {
+  outline: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+}
+
+/* Optional: prevent Android ripple if you're seeing that via some framework */
+button:focus,
+a:focus,
+input:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: none;
+} 
 body {
   background: linear-gradient(120deg, #2b0f3f 0%, #1a1a2e 50%, #0f0f2d 100%);
   background-attachment: fixed;
