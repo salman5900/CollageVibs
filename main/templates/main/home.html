@@ -8,14 +8,15 @@
 {% block content %}
 <div class="cv-home-container">
   <!-- Global Chat Box -->
-  <div onclick="goToGlobalChat()" class="cv-chat-box">
-    <div id="global-unread" class="cv-unread-bubble" style="{% if unread_global > 0 %}display: block;{% else %}display: none;{% endif %}">{{ unread_global }}</div>
-    <div class="cv-chat-content">
-      <h1>Global Chat</h1>
-      <p class="cv-chat-desc">Open space for all college students</p>
-    </div>
-    <div class="cv-online-count">{{ online_users_global }} online</div>
+<div onclick="goToGlobalChat()" class="cv-chat-box global-chat">
+  <div id="global-unread" class="cv-unread-bubble" style="{% if unread_global > 0 %}display: block;{% else %}display: none;{% endif %}">{{ unread_global }}</div>
+  <div class="cv-chat-content">
+    <h1>🌐 Global Chat</h1>
+    <p class="cv-chat-desc">Open space for all college students across the realm</p>
   </div>
+  <div class="cv-online-count">{{ online_users_global }} online</div>
+</div>
+
 
   <!-- Club Chat Boxes -->
   {% for club in clubs %}

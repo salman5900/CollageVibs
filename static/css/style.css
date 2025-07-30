@@ -1708,7 +1708,6 @@ button:active {
 /* Chat Box Core Style */
 .cv-chat-box {
   position: relative;
-  background: linear-gradient(135deg, #1e1b2e, #3c345d);
   border-radius: 20px;
   padding: 1.5em;
   width: 280px;
@@ -1725,54 +1724,32 @@ button:active {
   animation: tilePopIn 0.5s ease forwards;
   opacity: 0;
   cursor: pointer;
+  color: white;
 }
 
-/* Hover = Stand Up */
+.cv-chat-box.bright-text {
+  color: black;
+}
+
 .cv-chat-box:hover {
   transform: perspective(600px) rotateX(5deg) translateY(-10px);
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
   filter: brightness(1.1);
 }
 
-/* Click = Press Down */
 .cv-chat-box:active {
   transform: perspective(600px) rotateX(0deg) translateY(2px) scale(0.98);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   filter: brightness(0.95);
 }
 
-/* Stagger Pop-in Animation */
-.cv-chat-box:nth-child(1) { animation-delay: 0.1s; }
-.cv-chat-box:nth-child(2) { animation-delay: 0.2s; }
-.cv-chat-box:nth-child(3) { animation-delay: 0.3s; }
-.cv-chat-box:nth-child(4) { animation-delay: 0.4s; }
-.cv-chat-box:nth-child(5) { animation-delay: 0.5s; }
-.cv-chat-box:nth-child(6) { animation-delay: 0.6s; }
-.cv-chat-box:nth-child(7) { animation-delay: 0.7s; }
-.cv-chat-box:nth-child(8) { animation-delay: 0.8s; }
-.cv-chat-box:nth-child(9) { animation-delay: 0.9s; }
-.cv-chat-box:nth-child(10) { animation-delay: 1s; }
-.cv-chat-box:nth-child(11) { animation-delay: 1.1s; }
-.cv-chat-box:nth-child(12) { animation-delay: 1.2s; }
-.cv-chat-box:nth-child(13) { animation-delay: 1.3s; }
-.cv-chat-box:nth-child(14) { animation-delay: 1.4s; }
-.cv-chat-box:nth-child(15) { animation-delay: 1.5s; }
-.cv-chat-box:nth-child(16) { animation-delay: 1.6s; }
-
-
-/* Pop-in Keyframes */
 @keyframes tilePopIn {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Chat content (title + desc) */
+.cv-chat-box:nth-child(n) { animation-delay: calc(0.1s * var(--i, 1)); }
+
 .cv-chat-content {
   display: flex;
   flex-direction: column;
@@ -1784,17 +1761,14 @@ button:active {
   margin: 0;
   font-size: 1.2rem;
   font-weight: 600;
-  color: #f0f0ff;
 }
 
 .cv-chat-desc {
   margin-top: 0.3em;
   font-size: 0.85rem;
-  color: #cbcbe4;
   line-height: 1.3;
 }
 
-/* Online User Count */
 .cv-online-count {
   position: absolute;
   bottom: 10px;
@@ -1806,7 +1780,6 @@ button:active {
   color: #ddd;
 }
 
-/* Unread Bubble */
 .cv-unread-bubble {
   position: absolute;
   top: -8px;
@@ -1835,23 +1808,47 @@ button:active {
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* Gradients */
-.gradient-1  { background: linear-gradient(135deg, #0f1115, #1a1d22); }
-.gradient-2  { background: linear-gradient(135deg, #13161c, #1f232a); }
-.gradient-3  { background: linear-gradient(135deg, #161a20, #252a31); }
-.gradient-4  { background: linear-gradient(135deg, #1a1d24, #2b3038); }
-.gradient-5  { background: linear-gradient(135deg, #121519, #1e2328); }
-.gradient-6  { background: linear-gradient(135deg, #0e1014, #191d22); }
-.gradient-7  { background: linear-gradient(135deg, #14171c, #22272e); }
-.gradient-8  { background: linear-gradient(135deg, #181c21, #2c3138); }
-.gradient-9  { background: linear-gradient(135deg, #101316, #1c2126); }
-.gradient-10 { background: linear-gradient(135deg, #121518, #20252a); }
-.gradient-11 { background: linear-gradient(135deg, #15191e, #252b32); }
-.gradient-12 { background: linear-gradient(135deg, #0f1216, #1a1f24); }
-.gradient-13 { background: linear-gradient(135deg, #181c22, #2a3036); }
-.gradient-14 { background: linear-gradient(135deg, #13171c, #21272e); }
-.gradient-15 { background: linear-gradient(135deg, #15181d, #23282f); }
+/* Majestic Global Chat */
+.cv-chat-box.global-chat {
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  box-shadow: 0 0 25px rgba(100, 90, 255, 0.2), 0 0 10px rgba(255, 255, 255, 0.05) inset;
+  position: relative;
+  overflow: hidden;
+}
+.cv-chat-box.global-chat::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(130, 255, 255, 0.05), transparent 60%);
+  animation: float-glow 10s linear infinite;
+  pointer-events: none;
+}
+@keyframes float-glow {
+  0%   { transform: translate(0%, 0%) rotate(0deg); }
+  100% { transform: translate(50%, 50%) rotate(360deg); }
+}
 
+/* === Gradients === */
+.gradient-1  { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
+.gradient-2  { background: linear-gradient(135deg, #ff0080, #7928ca); }
+.gradient-3  { background: linear-gradient(135deg, #00c6ff, #0072ff); }
+.gradient-4  { background: linear-gradient(135deg, #fc466b, #3f5efb); }
+.gradient-5  { background: linear-gradient(135deg, #00f5a0, #00d9f5); color: black; }
+.gradient-6  { background: linear-gradient(135deg, #f7971e, #ffd200); color: black; }
+.gradient-7  { background: linear-gradient(135deg, #8e2de2, #4a00e0); }
+.gradient-8  { background: linear-gradient(135deg, #f953c6, #b91d73); }
+.gradient-9  { background: linear-gradient(135deg, #00c9ff, #92fe9d); color: black; }
+.gradient-10 { background: linear-gradient(135deg, #fc00ff, #00dbde); }
+.gradient-11 { background: linear-gradient(135deg, #ee0979, #ff6a00); color: black; }
+.gradient-12 { background: linear-gradient(135deg, #2193b0, #6dd5ed); color: black; }
+.gradient-13 { background: linear-gradient(135deg, #00b09b, #96c93d); color: black; }
+.gradient-14 { background: linear-gradient(135deg, #ff6a00, #ee0979); color: black; }
+.gradient-15 { background: linear-gradient(135deg, #12c2e9, #c471ed, #f64f59); }
+
+/* Optional: For dynamic color control, add a script to toggle .bright-text class based on computed luminance */
 
 
 /* Mobile Adjustments */
