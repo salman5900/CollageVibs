@@ -297,30 +297,42 @@ main::-webkit-scrollbar {
   display: none;                 /* Chrome, Safari, Edge */
 }
 
-
 .navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1em 2em;
-  background-color: transparent;
-
-  /* Add these for fixed positioning */
   position: fixed;
   top: 0;
   left: 0;
-  width: 97%;
+  width: 97%; /* full width at top */
+  padding: 0.8rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: transparent;
   z-index: 1000;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  height: 50px;
+  transition:
+    top 0.4s ease,
+    width 0.4s ease,
+    background 0.4s ease,
+    border-radius 0.4s ease,
+    box-shadow 0.4s ease,
+    backdrop-filter 0.4s ease;
 }
 
 .navbar.scrolled {
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 97%;
+  max-width: 1400px;
   background: linear-gradient(120deg, rgba(20, 20, 20, 0.6), rgba(30, 30, 30, 0.6), rgba(10, 10, 10, 0.6));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: background 0.3s ease;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
-
 
 
 
