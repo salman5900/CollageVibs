@@ -1886,6 +1886,7 @@ button:active {
 .cv-home-container {
   margin-top: 50px;
   display: flex;
+  overflow: visible !important;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 1.5rem;
@@ -1988,6 +1989,7 @@ button:active {
   top: -8px;
   right: -8px;
   background: #ff5e78;
+  overflow: visible !important;
   color: white;
   font-size: 0.7rem;
   padding: 6px 10px;
@@ -2016,7 +2018,6 @@ button:active {
   background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
   box-shadow: 0 0 25px rgba(100, 90, 255, 0.2), 0 0 10px rgba(255, 255, 255, 0.05) inset;
   position: relative;
-  overflow: hidden;
 }
 .cv-chat-box.global-chat::before {
   content: "";

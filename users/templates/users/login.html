@@ -5,24 +5,46 @@
 {% endblock %}
 
 {% block content %}
+<style>
+    .error {
+        background-color: #4a0d0d;
+        color: #ff9999;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        border: 1px solid #ff4d4d;
+        margin: 0 auto 20px auto;
+        max-width: 400px;
+        text-align: center;
+    }
+</style>
+
+
 <div class="login-container">
+    {% if form.non_field_errors %}
+    <div class="error">
+        ❌ Invalid login. Please check your username and password.
+    </div>
+{% endif %}
+
     <h1>Login</h1>
-<form action="{% url 'users:login' %}" method="POST">
-    {% csrf_token %}
-    <label for="username">Username:</label>
-    {{ form.username }}
 
-    <label for="password">Password:</label>
-    {{ form.password }}
+    <form action="{% url 'users:login' %}" method="POST">
+        {% csrf_token %}
 
-    <button type="submit">Login</button>
-    
-     <a href="{% url 'users:register' %}" class="link-button">
-      Create Account
-    </a>
-    
-</form>
+        <label for="username">Username:</label>
+        {{ form.username.errors }}
+        {{ form.username }}
 
+        <label for="password">Password:</label>
+        {{ form.password.errors }}
+        {{ form.password }}
+
+        <button type="submit">Login</button>
+
+        <a href="{% url 'users:register' %}" class="link-button">
+            Create Account
+        </a>
+    </form>
 </div>
-
 {% endblock %}
